@@ -73,15 +73,23 @@
             padding: 20px;
             box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
         }
-        .fixed-bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #dee2e6;
-            z-index: 1000;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        /* Stil za realne sličice u padajućem meniju */
+        select.form-select option {
+            padding: 10px;
+        }
+        .category-preview-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .category-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #dee2e6;
+            display: none;
         }
     </style>
 </head>
@@ -126,21 +134,30 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="kategorija" class="form-label fw-semibold">Kategorija</label>
-                            <select class="form-select" id="kategorija" required>
-                                <option value="" selected disabled>Izaberite kategoriju...</option>
-                                <option value="Rupa na putu">Rupa na putu / trotoaru</option>
-                                <option value="Divlja deponija">Divlja deponija / smeće</option>
-                                <option value="Javna rasveta">Neispravna javna rasveta</option>
-                                <option value="Zelene površine">Neorezano drveće / trava</option>
-                                <option value="Vodovod i kanalizacija">Havarija na vodovodu/kanalizaciji</option>
-                                <option value="Ostalo">Ostalo</option>
+                            <label for="kategorija" class="form-label fw-semibold">Kategorija problema</label>
+                            <select class="form-select" id="kategorija" required onchange="updateCategoryThumb(this)">
+                                <option value="" selected disabled data-img="">Izaberite kategoriju...</option>
+                                <option value="Rupa na putu" data-img="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=100">🕳️ Rupa na putu / trotoaru</option>
+                                <option value="Divlja deponija" data-img="https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=100">🗑️ Divlja deponija / smeće</option>
+                                <option value="Psi lutalice" data-img="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=100">🐕 Psi lutalice / napuštene životinje</option>
+                                <option value="Paljenje vatre" data-img="https://images.unsplash.com/photo-1508873696983-2df5c920ac1c?w=100">🔥 Paljenje vatre na otvorenom</option>
+                                <option value="Nelegalna gradnja" data-img="https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=100">🏗️ Nelegalna gradnja / bespravni radovi</option>
+                                <option value="Saobraćajni prekršaj" data-img="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=100">🚗 Saobraćajni prekršaj / parkiranje</option>
+                                <option value="Javna rasveta" data-img="https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?w=100">💡 Neispravna javna rasveta</option>
+                                <option value="Vodovod i kanalizacija" data-img="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=100">🚰 Havarija na vodovodu/kanalizaciji</option>
+                                <option value="Ostalo" data-img="https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=100">⚠️ Ostali komunalni problemi</option>
                             </select>
+                            
+                            <!-- Prikaz realne sličice izabrane kategorije -->
+                            <div class="category-preview-container">
+                                <img id="selectedCategoryThumb" class="category-thumb" src="" alt="Ilustracija kategorije">
+                                <small id="categoryHint" class="text-muted">Izaberite kategoriju da vidite vizuelni primer.</small>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="opis" class="form-label fw-semibold">Kratak opis</label>
-                            <textarea class="form-select" id="opis" rows="2" placeholder="Opišite ukratko problem..." style="height: 70px;"></textarea>
+                            <textarea class="form-control" id="opis" rows="2" placeholder="Opišite ukratko problem..."></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -195,7 +212,6 @@
                 </div>
 
                 <div class="row g-3">
-                    <!-- Nagrada 1 -->
                     <div class="col-12">
                         <div class="card card-custom p-3">
                             <div class="d-flex justify-content-between align-items-start">
@@ -210,7 +226,6 @@
                         </div>
                     </div>
 
-                    <!-- Nagrada 2 -->
                     <div class="col-12">
                         <div class="card card-custom p-3">
                             <div class="d-flex justify-content-between align-items-start">
@@ -225,7 +240,6 @@
                         </div>
                     </div>
 
-                    <!-- Nagrada 3 -->
                     <div class="col-12">
                         <div class="card card-custom p-3">
                             <div class="d-flex justify-content-between align-items-start">
@@ -247,7 +261,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Inicijalni podaci
+        // Inicijalni podaci i Supabase konfiguracija (opcionalno za kasnije povezivanje)
+        const SUPABASE_URL = ""; 
+        const SUPABASE_KEY = ""; 
+
         let points = parseInt(localStorage.getItem('userPoints')) || 0;
         let reports = JSON.parse(localStorage.getItem('userReports')) || [];
         let currentGeo = "";
@@ -278,11 +295,27 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.value || e.target.result;
+                    document.getElementById('imagePreview').src = e.target.result;
                     document.getElementById('imagePreview').classList.remove('d-none');
                     document.getElementById('uploadPlaceholder').classList.add('d-none');
                 }
                 reader.readAsDataURL(file);
+            }
+        }
+
+        function updateCategoryThumb(selectObj) {
+            const selectedOption = selectObj.options[selectObj.selectedIndex];
+            const imgSrc = selectedOption.getAttribute('data-img');
+            const thumbImg = document.getElementById('selectedCategoryThumb');
+            const hint = document.getElementById('categoryHint');
+
+            if (imgSrc) {
+                thumbImg.src = imgSrc;
+                thumbImg.style.display = 'block';
+                hint.innerText = "Izabrana kategorija: " + selectedOption.text;
+            } else {
+                thumbImg.style.display = 'none';
+                hint.innerText = "Izaberite kategoriju da vidite vizuelni primer.";
             }
         }
 
@@ -310,7 +343,11 @@
             const kategorija = document.getElementById('kategorija').value;
             const opis = document.getElementById('opis').value;
 
-            // Dodavanje prijava i poena
+            if(!kategorija) {
+                alert('Molimo izaberite kategoriju problema.');
+                return;
+            }
+
             const newReport = {
                 kategorija: kategorija,
                 opis: opis,
@@ -320,17 +357,18 @@
             };
 
             reports.unshift(newReport);
-            points += 50; // Dodeljujemo 50 poena po prijavi!
+            points += 50; 
 
             localStorage.setItem('userPoints', points);
             localStorage.setItem('userReports', JSON.stringify(reports));
 
             alert('Čestitamo! Vaša prijava je uspešno poslata. Osvojili ste 50 poena!');
             
-            // Reset forme
             this.reset();
             document.getElementById('imagePreview').classList.add('d-none');
             document.getElementById('uploadPlaceholder').classList.remove('d-none');
+            document.getElementById('selectedCategoryThumb').style.display = 'none';
+            document.getElementById('categoryHint').innerText = "Izaberite kategoriju da vidite vizuelni primer.";
             document.getElementById('locationStatus').innerText = "Lokacija nije preuzeta";
             currentGeo = "";
 
@@ -344,7 +382,6 @@
                     localStorage.setItem('userPoints', points);
                     updateUI();
                     
-                    // Generisanje nasumičnog koda kupona
                     const couponCode = 'KLAD-' + Math.floor(100000 + Math.random() * 900000);
                     alert(`Uspešno ste preuzeli kupon!\n\nNAGRADA: ${rewardTitle}\nKOD KUPONA: ${couponCode}\n\nPokažite ovaj ekran ili kod u radnji prilikom kupovine.`);
                 }
@@ -353,7 +390,6 @@
             }
         }
 
-        // Učitavanje početnih podataka
         updateUI();
     </script>
 </body>
