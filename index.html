@@ -82,57 +82,36 @@
             color: var(--text);
         }
 
-        /* ČIST I PREGLEDAN DIZAJN KATEGORIJA */
-        .category-list {
+        /* PRIKAZ VAŠIH GOTOVIH BANERA KAO KATEGORIJA */
+        .category-banners-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 15px;
         }
 
-        .category-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            padding: 12px 14px;
+        .category-banner-item {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2.5px solid var(--border);
             cursor: pointer;
             transition: all 0.2s ease;
-            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+            background: #ffffff;
+            display: block;
         }
 
-        .category-num {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #f1f5f9;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.95rem;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
+        .category-banner-item img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
-        .category-item span {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .category-item.selected {
+        .category-banner-item.selected {
             border-color: var(--primary);
-            background-color: #ecfdf5;
-            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);
-        }
-
-        .category-item.selected .category-num {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+            transform: scale(1.01);
         }
 
         input, textarea {
@@ -314,45 +293,38 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" required onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA U UREDNOM I STABILNOM FORMATU -->
+                    <!-- VAŠIH 7 KATEGORIJA DIREKTNO PREKO PRIPREMLJENIH SLIKA -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
-                        <div class="category-list">
-                            <div class="category-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <div class="category-num">1</div>
-                                <span>Bacanje otpada na javnoj površini</span>
+                        <div class="category-banners-container">
+                            <div class="category-banner-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <img src="kat1.jpg – Bacanje otpada.jpg" alt="1. Bacanje otpada">
                             </div>
 
-                            <div class="category-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <div class="category-num">2</div>
-                                <span>Nepropisno parkiranje na trotoaru ili zelenoj površini</span>
+                            <div class="category-banner-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <img src="kat2.jpg – Nepropisno parkiranje.jpg" alt="2. Nepropisno parkiranje">
                             </div>
 
-                            <div class="category-item" onclick="selectCategory(this, 'Psi lutalice')">
-                                <div class="category-num">3</div>
-                                <span>Psi lutalice</span>
+                            <div class="category-banner-item" onclick="selectCategory(this, 'Psi lutalice')">
+                                <img src="kat3.jpg – Psi lutalice.jpg" alt="3. Psi lutalice">
                             </div>
 
-                            <div class="category-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
-                                <div class="category-num">4</div>
-                                <span>Vatra na otvorenom - požar - dim</span>
+                            <div class="category-banner-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <img src="kat4.jpg" alt="4. Požar / Dim">
                             </div>
 
-                            <div class="category-item" onclick="selectCategory(this, 'Divlja deponija')">
-                                <div class="category-num">5</div>
-                                <span>Divlja deponija</span>
+                            <div class="category-banner-item" onclick="selectCategory(this, 'Divlja deponija')">
+                                <img src="kat5.jpg – Divlja deponija.jpg" alt="5. Divlja deponija">
                             </div>
 
-                            <div class="category-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <div class="category-num">6</div>
-                                <span>Rupa na putu - oštećen kolovoz</span>
+                            <div class="category-banner-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <img src="kat6.jpg – Rupa na putu.jpg" alt="6. Rupa na putu">
                             </div>
 
-                            <div class="category-item" onclick="selectCategory(this, 'Ostalo')">
-                                <div class="category-num">7</div>
-                                <span>Ostalo</span>
+                            <div class="category-banner-item" onclick="selectCategory(this, 'Ostalo')">
+                                <img src="kat7.jpg" alt="7. Ostalo">
                             </div>
                         </div>
                     </div>
@@ -422,7 +394,7 @@
             <div class="card">
                 <h3>👤 Profil korisnika</h3>
                 <p style="margin-top:10px; color:var(--text-light);">Bodovi se čuvaju na vašem uređaju.</p>
-                <p style="margin-top:10px;"><strong>Servisni mejl:</strong> sredikladovo@gmail.com</p>
+                <p style="margin-top:10px;"><strong>Servisni mejl:</strong> sredikladovo@gmail.com[cite: 1]</p>
             </div>
         </div>
 
@@ -447,7 +419,7 @@
         let map = null;
 
         function selectCategory(element, catName) {
-            document.querySelectorAll('.category-item').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.category-banner-item').forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selectedCategory').value = catName;
         }
@@ -566,9 +538,9 @@
 
         document.getElementById('sponsorForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('sponsorName').value;
-            const offer = document.getElementById('sponsorOffer').value;
-            const cost = parseInt(document.getElementById('sponsorCost').value);
+            const name = document.getElementById('sponsorName'].value;
+            const offer = document.getElementById('sponsorOffer'].value;
+            const cost = parseInt(document.getElementById('sponsorCost'].value);
 
             sponsors.push({ id: Date.now(), name, offer, cost });
             localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
@@ -596,8 +568,8 @@
         // Slanje prijave sa slikom i GPS lokacijom na mejl
         document.getElementById('reportForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const category = document.getElementById('selectedCategory').value;
-            const description = document.getElementById('description').value.trim();
+            const category = document.getElementById('selectedCategory'].value;
+            const description = document.getElementById('description'].value.trim();
 
             let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
             let isDuplicate = false;
