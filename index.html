@@ -82,114 +82,79 @@
             color: var(--text);
         }
 
-        /* BANERI SA SLIKOM U POZADINI I ELEGANTNIM BELIM PRELIVOM */
-        .category-banners {
+        /* UREDAN I ČIST DIZAJN KATEGORIJA BEZ PREKLAPANJA */
+        .category-list-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-bottom: 15px;
         }
 
-        .category-banner {
-            position: relative;
-            height: 95px;
-            border-radius: 14px;
-            overflow: hidden;
+        .category-box {
+            background: #ffffff;
             border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            display: flex;
-            align-items: center;
-            background-size: cover;
-            background-position: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
-        /* Beli preliv sa desne strane da tekst bude maksimalno čitak preko slike */
-        .category-banner::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.92) 45%, rgba(255,255,255,0.98) 100%);
-            z-index: 1;
+        .category-box:hover {
+            border-color: #cbd5e1;
         }
 
-        /* Povezivanje na vaše lokalne fajlove iz repozitorijuma */
-        .category-banner.bg-1 { background-image: url('kat1.jpg'); }
-        .category-banner.bg-2 { background-image: url('kat2.jpg'); }
-        .category-banner.bg-3 { background-image: url('kat3.jpg'); }
-        .category-banner.bg-4 { background-image: url('kat4.jpg'); }
-        .category-banner.bg-5 { background-image: url('kat5.jpg'); }
-        .category-banner.bg-6 { background-image: url('kat6.jpg'); }
-        .category-banner.bg-7 { background-image: url('kat7.jpg'); }
-
-        .banner-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 0 14px;
-            gap: 12px;
-        }
-
-        .banner-number {
+        .cat-num-circle {
             width: 42px;
             height: 42px;
-            color: white;
             border-radius: 50%;
+            background: var(--primary);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.15rem;
             font-weight: bold;
+            font-size: 1.1rem;
             flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* Boje krugova po rednom broju kao na vašem primeru */
-        .bg-1 .banner-number { background-color: #059669; }
-        .bg-2 .banner-number { background-color: #ef4444; }
-        .bg-3 .banner-number { background-color: #0284c7; }
-        .bg-4 .banner-number { background-color: #d97706; }
-        .bg-5 .banner-number { background-color: #059669; }
-        .bg-6 .banner-number { background-color: #334155; }
-        .bg-7 .banner-number { background-color: #7c3aed; }
-
-        .banner-info {
+        .cat-details {
             flex-grow: 1;
         }
 
-        .banner-title {
-            font-size: 0.93rem;
+        .cat-name {
+            font-size: 0.98rem;
             font-weight: 700;
-            color: #0f172a;
-            line-height: 1.25;
+            color: var(--text);
+            line-height: 1.3;
+            margin-bottom: 2px;
         }
 
-        .banner-desc {
-            font-size: 0.74rem;
+        .cat-sub {
+            font-size: 0.8rem;
             color: var(--text-light);
             line-height: 1.2;
-            margin-top: 2px;
         }
 
-        .banner-arrow {
-            font-size: 1.3rem;
-            font-weight: bold;
+        .cat-arrow {
             color: var(--text-light);
-            padding-right: 4px;
+            font-size: 1.1rem;
+            font-weight: bold;
             flex-shrink: 0;
         }
 
-        .category-banner.selected {
+        .category-box.selected {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
-            transform: scale(1.005);
+            background-color: #ecfdf5;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
         }
 
-        .category-banner.selected .banner-arrow {
-            color: var(--primary);
+        .category-box.selected .cat-num-circle {
+            background: var(--primary-dark);
         }
 
         input, textarea {
@@ -371,87 +336,73 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" required onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA SA VAŠIM LOKALNIM SLIKAMA I PRELEPIM BANERIMA -->
+                    <!-- 7 KATEGORIJA SA ČISTIM I STABILNIM DIZAJNOM -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
-                        <div class="category-banners">
-                            <div class="category-banner bg-1 selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <div class="banner-content">
-                                    <div class="banner-number">1</div>
-                                    <div class="banner-info">
-                                        <div class="banner-title">Bacanje otpada na javnoj površini</div>
-                                        <div class="banner-desc">Pravilno odlaganje otpada čuva našu okolinu.</div>
-                                    </div>
-                                    <div class="banner-arrow">›</div>
+                        <div class="category-list-container">
+                            <div class="category-box selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <div class="cat-num-circle">1</div>
+                                <div class="cat-details">
+                                    <div class="cat-name">Bacanje otpada na javnoj površini</div>
+                                    <div class="cat-sub">Pravilno odlaganje čuva našu okolinu.</div>
                                 </div>
+                                <div class="cat-arrow">›</div>
                             </div>
 
-                            <div class="category-banner bg-2" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <div class="banner-content">
-                                    <div class="banner-number">2</div>
-                                    <div class="banner-info">
-                                        <div class="banner-title">Nepropisno parkiranje (trotoar / zelenilo)</div>
-                                        <div class="banner-desc">Ostavimo prostor za sve učesnike u saobraćaju i za zelenilo.</div>
-                                    </div>
-                                    <div class="banner-arrow">›</div>
+                            <div class="category-box" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <div class="cat-num-circle">2</div>
+                                <div class="cat-details">
+                                    <div class="cat-name">Nepropisno parkiranje (trotoar / zelenilo)</div>
+                                    <div class="cat-sub">Ostavimo prostor za pešake i zelene površine.</div>
                                 </div>
+                                <div class="cat-arrow">›</div>
                             </div>
 
-                            <div class="category-banner bg-3" onclick="selectCategory(this, 'Psi lutalice')">
-                                <div class="banner-content">
-                                    <div class="banner-number">3</div>
-                                    <div class="banner-info">
-                                        <div class="banner-title">Psi lutalice</div>
-                                        <div class="banner-desc">Briga o životinjama je briga o zajednici.</div>
-                                    </div>
-                                    <div class="banner-arrow">›</div>
+                            <div class="category-box" onclick="selectCategory(this, 'Psi lutalice')">
+                                <div class="cat-num-circle">3</div>
+                                <div class="cat-details">
+                                    <div class="cat-name">Psi lutalice</div>
+                                    <div class="cat-sub">Briga o životinjama je briga o bezbednosti.</div>
                                 </div>
+                                <div class="cat-arrow">›</div>
                             </div>
 
-                            <div class="category-banner bg-4" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
-                                <div class="banner-content">
-                                    <div class="banner-number">4</div>
-                                    <div class="banner-info">
-                                        <div class="banner-title">Vatra na otvorenom / Požar / Dim</div>
-                                        <div class="banner-desc">Čuvajmo prirodu i zdravlje svih nas.</div>
-                                    </div>
-                                    <div class="banner-arrow">›</div>
+                            <div class="category-box" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <div class="cat-num-circle">4</div>
+                                <div class="cat-details">
+                                    <div class="cat-name">Vatra na otvorenom - požar - dim</div>
+                                    <div class="cat-sub">Brza reakcija sprečava štetu.</div>
                                 </div>
+                                <div class="cat-arrow">›</div>
                             </div>
 
-                            <div class="category-banner bg-5" onclick="selectCategory(this, 'Divlja deponija')">
-                                <div class="banner-content">
-                                    <div class="banner-number">5</div>
-                                    <div class="banner-info">
-                                        <div class="banner-title">Divlja deponija</div>
-                                        <div class="banner-desc">Čistija priroda za bolju budućnost.</div>
-                                    </div>
-                                    <div class="banner-arrow">›</div>
+                            <div class="category-box" onclick="selectCategory(this, 'Divlja deponija')">
+                                <div class="cat-num-circle">5</div>
+                                <div class="cat-details">
+                                    <div class="cat-name">Divlja deponija</div>
+                                    <div class="cat-sub">Prijavite nelegalno odlaganje otpada.</div>
                                 </div>
+                                <div class="cat-arrow">›</div>
                             </div>
 
-                            <div class="category-banner bg-6" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <div class="banner-content">
-                                    <div class="banner-number">6</div>
-                                    <div class="banner-info">
-                                        <div class="banner-title">Rupa na putu / Oštećen kolovoz</div>
-                                        <div class="banner-desc">Prijavi problem, doprinesi bezbednosti.</div>
-                                    </div>
-                                    <div class="banner-arrow">›</div>
+                            <div class="category-box" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <div class="cat-num-circle">6</div>
+                                <div class="cat-details">
+                                    <div class="cat-name">Rupa na putu - oštećen kolovoz</div>
+                                    <div class="cat-sub">Obezbedimo sigurnije saobraćajnice.</div>
                                 </div>
+                                <div class="cat-arrow">›</div>
                             </div>
 
-                            <div class="category-banner bg-7" onclick="selectCategory(this, 'Ostalo')">
-                                <div class="banner-content">
-                                    <div class="banner-number">7</div>
-                                    <div class="banner-info">
-                                        <div class="banner-title">Ostalo</div>
-                                        <div class="banner-desc">Zajedno za lepšu i uređeniju opštinu.</div>
-                                    </div>
-                                    <div class="banner-arrow">›</div>
+                            <div class="category-box" onclick="selectCategory(this, 'Ostalo')">
+                                <div class="cat-num-circle">7</div>
+                                <div class="cat-details">
+                                    <div class="cat-name">Ostalo</div>
+                                    <div class="cat-sub">Ostali komunalni problemi.</div>
                                 </div>
+                                <div class="cat-arrow">›</div>
                             </div>
                         </div>
                     </div>
@@ -546,7 +497,7 @@
         let map = null;
 
         function selectCategory(element, catName) {
-            document.querySelectorAll('.category-banner').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.category-box').forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selectedCategory').value = catName;
         }
