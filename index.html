@@ -82,16 +82,18 @@
             color: var(--text);
         }
 
-        /* BANERI - SVI PRIRODNO VIDLJIVI I CELE SLIKE BEZ ODSECANJA */
+        /* BANERI - STRIKTNO JEDNAKE PROPORCIJE I DIMENZIJE ZA SVE KATEGORIJE */
         .category-banners {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 15px;
         }
 
         .category-banner {
             position: relative;
+            width: 100%;
+            aspect-ratio: 3.5 / 1; /* Garantuje savršenu i jednaku razmeru 3.5 prema 1 za svih 7 slika */
             border-radius: 14px;
             overflow: hidden;
             border: 2px solid var(--border);
@@ -101,12 +103,12 @@
             background: #ffffff;
             padding: 0;
             display: block;
-            line-height: 0;
         }
 
         .category-banner img.full-banner-img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: fill; /* Prilagođava sliku tačno ivicama bez odsecanja i deformacija */
             display: block;
         }
 
@@ -331,10 +333,10 @@
                         </div>
                     </div>
 
-                    <!-- Opis sa predlogom primera -->
+                    <!-- Opis (Opciono / Nije obavezno) -->
                     <div class="form-group">
-                        <label>Kratak opis i detalji</label>
-                        <textarea id="description" rows="3" placeholder="Npr. Ispred zgrade u ulici 22. Septembra nalazi se nepropisno parkirano vozilo..." required></textarea>
+                        <label>Kratak opis i detalji (opciono)</label>
+                        <textarea id="description" rows="3" placeholder="Npr. Ispred zgrade u ulici 22. Septembra nalazi se nepropisno parkirano vozilo..."></textarea>
                     </div>
 
                     <!-- GPS Lokacija -->
@@ -498,7 +500,7 @@
                         <div style="width: 180px; text-align: left;">
                             ${r.image ? `<img src="${r.image}" class="popup-img">` : ''}
                             <strong style="color:var(--text);">${r.category}</strong><br>
-                            <span style="font-size:0.85rem;">${r.description}</span><br>
+                            <span style="font-size:0.85rem;">${r.description || 'Nema opisa'}</span><br>
                             <small style="color:var(--primary-dark); font-weight:600;">(tačnost ~${r.accuracy || 19} m)</small>
                         </div>
                     `;
@@ -609,9 +611,10 @@
                 banner.innerText = '✅ Prijava je poslata. Hvala! (+1 bod)';
             }
 
+            const descText = description ? description : 'Nije unet dodatni opis';
             const locStr = (userLat && userLng) ? `\nGPS Lokacija: https://maps.google.com/?q=${userLat},${userLng} (tačnost ~${gpsAccuracy}m)` : '';
             const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
-            const mailBody = encodeURIComponent(`Kategorija: ${category}\nOpis: ${description}${locStr}\n\n[Napomena: Fotografija dokaza je zabeležena i sačuvana u aplikaciji na mapi prijava.]`);
+            const mailBody = encodeURIComponent(`Kategorija: ${category}\nOpis: ${descText}${locStr}\n\n[Napomena: Fotografija dokaza je zabeležena i sačuvana u aplikaciji na mapi prijava.]`);
             
             setTimeout(() => {
                 window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
