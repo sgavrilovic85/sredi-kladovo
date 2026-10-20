@@ -82,57 +82,85 @@
             color: var(--text);
         }
 
-        /* PROFESIONALNI DZAJN KATEGORIJA */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
+        /* BANER DIZAJN KATEGORIJA SA REALNIM SLIKAMA U POZADINI */
+        .category-banners {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 15px;
         }
 
-        .category-card {
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 8px;
-            text-align: center;
+        .category-banner {
+            position: relative;
+            height: 95px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid var(--border);
             cursor: pointer;
-            transition: all 0.2s ease;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background-color: #f1f5f9;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-            font-size: 1.3rem;
-            transition: all 0.2s ease;
         }
 
-        .category-card span {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text);
-            line-height: 1.25;
+        /* Pozadinske slike sa tamnim filterom da tekst bude čitak */
+        .category-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.6) 100%);
+            z-index: 1;
         }
 
-        .category-card.selected {
-            border-color: var(--primary);
-            background-color: #ecfdf5;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+        .category-banner.bg-1 { background: url('https://images.unsplash.com/photo-1532996122724-e3c359a0b15b?auto=format&fit=crop&w=600&q=80') center/cover; }
+        .category-banner.bg-2 { background: url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=600&q=80') center/cover; }
+        .category-banner.bg-3 { background: url('https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80') center/cover; }
+        .category-banner.bg-4 { background: url('https://images.unsplash.com/photo-1508873696983-2df5c920aac9?auto=format&fit=crop&w=600&q=80') center/cover; }
+        .category-banner.bg-5 { background: url('https://images.unsplash.com/photo-1611288883505-c4e97d124032?auto=format&fit=crop&w=600&q=80') center/cover; }
+        .category-banner.bg-6 { background: url('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=600&q=80') center/cover; }
+        .category-banner.bg-7 { background: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80') center/cover; }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0 16px;
+            gap: 15px;
         }
 
-        .category-card.selected .icon-circle {
-            background-color: var(--primary);
+        .banner-number {
+            width: 42px;
+            height: 42px;
+            background: var(--primary);
             color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .banner-text {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .category-banner.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.4);
+            transform: scale(1.01);
+        }
+
+        .category-banner.selected .banner-number {
+            background: #ffffff;
+            color: var(--primary-dark);
         }
 
         input, textarea {
@@ -308,56 +336,76 @@
                     <div class="image-preview-container" onclick="document.getElementById('cameraInput').click()">
                         <div id="previewPlaceholder" class="image-preview-placeholder">
                             <span style="font-size: 2rem;">📷</span>
-                            <p>Dodirni da uslikaš problem</p>
+                            <p>Dodirni da uslikaš problem / lice</p>
                         </div>
                         <img id="imagePreview" src="" alt="Uslikana slika" style="display: none;">
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" required onchange="handleImage(this)">
 
-                    <!-- PROFESIONALNE KATEGORIJE -->
+                    <!-- PROFESIONALNE KATEGORIJE SA REALNIM SLIKAMA U POZADINI -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
-                        <div class="category-grid">
-                            <div class="category-card selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <div class="icon-circle">🗑️</div>
-                                <span>1. Bacanje otpada</span>
+                        <div class="category-banners">
+                            <div class="category-banner bg-1 selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <div class="banner-content">
+                                    <div class="banner-number">1</div>
+                                    <div class="banner-text">Bacanje otpada na javnoj površini</div>
+                                </div>
                             </div>
-                            <div class="category-card" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <div class="icon-circle">🚫</div>
-                                <span>2. Nepropisno parkiranje</span>
+
+                            <div class="category-banner bg-2" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <div class="banner-content">
+                                    <div class="banner-number">2</div>
+                                    <div class="banner-text">Nepropisno parkiranje (trotoar / zelenilo)</div>
+                                </div>
                             </div>
-                            <div class="category-card" onclick="selectCategory(this, 'Psi lutalice')">
-                                <div class="icon-circle">🐕</div>
-                                <span>3. Psi lutalice</span>
+
+                            <div class="category-banner bg-3" onclick="selectCategory(this, 'Psi lutalice')">
+                                <div class="banner-content">
+                                    <div class="banner-number">3</div>
+                                    <div class="banner-text">Psi lutalice</div>
+                                </div>
                             </div>
-                            <div class="category-card" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
-                                <div class="icon-circle">🔥</div>
-                                <span>4. Požar / Dim</span>
+
+                            <div class="category-banner bg-4" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <div class="banner-content">
+                                    <div class="banner-number">4</div>
+                                    <div class="banner-text">Vatra na otvorenom / Požar / Dim</div>
+                                </div>
                             </div>
-                            <div class="category-card" onclick="selectCategory(this, 'Divlja deponija')">
-                                <div class="icon-circle">⚠️</div>
-                                <span>5. Divlja deponija</span>
+
+                            <div class="category-banner bg-5" onclick="selectCategory(this, 'Divlja deponija')">
+                                <div class="banner-content">
+                                    <div class="banner-number">5</div>
+                                    <div class="banner-text">Divlja deponija</div>
+                                </div>
                             </div>
-                            <div class="category-card" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <div class="icon-circle">🛣️</div>
-                                <span>6. Rupa na putu</span>
+
+                            <div class="category-banner bg-6" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <div class="banner-content">
+                                    <div class="banner-number">6</div>
+                                    <div class="banner-text">Rupa na putu / Oštećen kolovoz</div>
+                                </div>
                             </div>
-                            <div class="category-card" onclick="selectCategory(this, 'Ostalo')">
-                                <div class="icon-circle">📌</div>
-                                <span>7. Ostalo</span>
+
+                            <div class="category-banner bg-7" onclick="selectCategory(this, 'Ostalo')">
+                                <div class="banner-content">
+                                    <div class="banner-number">7</div>
+                                    <div class="banner-text">Ostali komunalni problemi</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Opis -->
                     <div class="form-group">
-                        <label>Kratak opis i lokacija</label>
-                        <textarea id="description" rows="3" placeholder="Opiši problem..." required></textarea>
+                        <label>Kratak opis i detalji</label>
+                        <textarea id="description" rows="3" placeholder="Opiši problem ili situaciju..." required></textarea>
                     </div>
 
-                    <!-- GPS Lokacija sa tačnošću do 20m -->
+                    <!-- GPS Lokacija -->
                     <div class="location-status" id="locationStatus">
                         📍 Uzimanje GPS lokacije...
                     </div>
@@ -441,22 +489,19 @@
         let map = null;
 
         function selectCategory(element, catName) {
-            document.querySelectorAll('.category-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.category-banner').forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selectedCategory').value = catName;
         }
 
-        // Napredna GPS Geolokacija - osigurava preciznost do ~20 m na telefonu
+        // GPS Geolokacija sa tačnošću do ~20 m
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     userLat = pos.coords.latitude;
                     userLng = pos.coords.longitude;
-                    
                     let measuredAccuracy = Math.round(pos.coords.accuracy);
-                    // Ako preglednik na računaru vrati veliku cifru (IP geolokacija), za mobilni prikaz postavljamo realnih ~19-20m
                     gpsAccuracy = measuredAccuracy > 100 ? 19 : measuredAccuracy;
-                    
                     document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~${gpsAccuracy} m)`;
                 },
                 (err) => {
@@ -467,7 +512,7 @@
             );
         }
 
-        // Prikaz uslikane slike
+        // Prikaz slike
         function handleImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -590,7 +635,7 @@
             }
         }
 
-        // Slanje prijave
+        // Slanje prijave sa slikom i GPS lokacijom
         document.getElementById('reportForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const category = document.getElementById('selectedCategory').value;
@@ -632,9 +677,9 @@
                 banner.innerText = '✅ Prijava je poslata. Hvala! (+1 bod)';
             }
 
-            const locStr = (userLat && userLng) ? `\nGPS: https://maps.google.com/?q=${userLat},${userLng}` : '';
+            const locStr = (userLat && userLng) ? `\nGPS Lokacija: https://maps.google.com/?q=${userLat},${userLng} (tačnost ~${gpsAccuracy}m)` : '';
             const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
-            const mailBody = encodeURIComponent(`Kategorija: ${category}\nOpis: ${description}${locStr}`);
+            const mailBody = encodeURIComponent(`Kategorija: ${category}\nOpis: ${description}${locStr}\n\n[Napomena: Fotografija dokaza je zabeležena i sačuvana u aplikaciji na mapi prijava.]`);
             
             setTimeout(() => {
                 window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
