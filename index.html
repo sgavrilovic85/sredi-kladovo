@@ -6,59 +6,50 @@
     <title>Sredi Kladovo</title>
     <style>
         :root {
-            --primary: #0056b3;
-            --secondary: #28a745;
-            --bg: #f4f6f9;
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
-            --text: #333333;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            margin: 0;
-            padding: 0;
+            padding-bottom: 70px;
         }
 
         header {
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            padding: 20px;
             text-align: center;
-            padding: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
 
         .container {
             max-width: 600px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-
-        .nav-tabs {
-            display: flex;
-            justify-content: space-around;
-            background: white;
-            border-radius: 10px;
-            padding: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: none;
-            font-weight: bold;
-            color: #666;
-            cursor: pointer;
-            border-radius: 8px;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
+            margin: 20px auto;
+            padding: 0 15px;
         }
 
         .card {
@@ -66,299 +57,347 @@
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
         }
 
-        .points-badge {
-            background: #ffc107;
-            color: #000;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            display: inline-block;
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
             margin-bottom: 15px;
         }
 
-        form label {
+        label {
             display: block;
-            margin-top: 10px;
-            font-weight: bold;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
-        form input, form textarea, form select {
+        select, input, textarea {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
         }
 
-        button.btn-submit {
-            width: 100%;
-            background: var(--secondary);
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
+            padding: 12px 20px;
             border-radius: 8px;
-            margin-top: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .reward-item {
-            border-bottom: 1px solid #eee;
-            padding: 15px 0;
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .points-badge {
+            background: #ecfdf5;
+            color: var(--primary-dark);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Navigacija na dnu */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        nav button {
+            background: none;
+            color: var(--text-light);
+            border: none;
+            flex: 1;
+            padding: 12px 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        nav button.active {
+            color: var(--primary);
+            background: #f0fdf4;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sponsor-item {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .reward-item:last-child { border-bottom: none; }
-
-        .reward-points {
-            background: var(--primary);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: bold;
+        .sponsor-info h4 {
+            font-size: 0.95rem;
+            color: var(--text);
         }
 
-        .btn-claim {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
+        .sponsor-info p {
+            font-size: 0.8rem;
+            color: var(--text-light);
         }
 
-        .btn-claim:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .sponsor-form-toggle {
-            background: #6c757d;
+        .delete-btn {
+            background: #ef4444;
             color: white;
             border: none;
-            padding: 8px;
+            padding: 6px 10px;
             border-radius: 6px;
-            width: 100%;
-            margin-top: 15px;
+            font-size: 0.75rem;
+            width: auto;
             cursor: pointer;
         }
-
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Sredi Kladovo 🏙️</h1>
+        <h1>Sredi Kladovo</h1>
+        <p>Aktivno građansko uređenje našeg grada</p>
     </header>
 
     <div class="container">
-        <!-- Navigacija -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="showTab('prijava')">📸 Prijava</button>
-            <button class="tab-btn" onclick="showTab('nagrade')">🎁 Nagrade</button>
-        </div>
 
-        <!-- Stanje bodova -->
-        <div class="card" style="text-align: center;">
-            <div>Moji bodovi:</div>
-            <div class="points-badge">🏆 <span id="user-points">0</span> poena</div>
-        </div>
-
-        <!-- TAB 1: Prijava problema -->
-        <div id="tab-prijava" class="tab-content">
+        <!-- SEKCIJA 1: PRIJAVA PROBLEMA -->
+        <div id="tab-prijava" class="tab-content active">
             <div class="card">
-                <h3>Prijavi komunalni problem</h3>
-                <form id="issue-form" onsubmit="submitReport(event)">
-                    <label>Kategorija:</label>
-                    <select id="category" required>
-                        <option value="Divlja deponija / Šut">Divlja deponija / Šut</option>
-                        <option value="Rupa na putu">Oštećenje kolovoza / Rupa</option>
-                        <option value="Javna rasveta">Neispravna javna rasveta</option>
-                        <option value="Ostalo">Ostalo</option>
-                    </select>
+                <h2>📸 Prijavi komunalni problem</h2>
+                <form id="reportForm">
+                    <div class="form-group">
+                        <label for="category">Kategorija problema</label>
+                        <select id="category" required>
+                            <option value="">Izaberite kategoriju...</option>
+                            <option value="rupa">Rupa na putu / oštećenje</option>
+                            <option value="deponija">Divlja deponija / šut</option>
+                            <option value="rasveta">Neispravna javna rasveta</option>
+                            <option value="smeće">Prepunjeni kontejneri / otpad</option>
+                            <option value="ostalo">Ostali komunalni problemi</option>
+                        </select>
+                    </div>
 
-                    <label>Opis i detalji:</label>
-                    <textarea id="description" rows="3" placeholder="Opišite problem..." required></textarea>
+                    <div class="form-group">
+                        <label for="image">Fotografija problema</label>
+                        <input type="file" id="image" accept="image/*" capture="environment" required>
+                    </div>
 
-                    <label>Slika problema:</label>
-                    <input type="file" id="image" accept="image/*" capture="environment">
+                    <div class="form-group">
+                        <label for="description">Opis i lokacija (ili bliža ulica)</label>
+                        <textarea id="description" rows="3" placeholder="Npr. Ulica 22. Septembar, kod broja 12..." required></textarea>
+                    </div>
 
-                    <button type="submit" class="btn-submit">Pošalji prijavu</button>
+                    <button type="submit">Pošalji prijavu</button>
                 </form>
             </div>
         </div>
 
-        <!-- TAB 2: Nagrade i sponzori -->
-        <div id="tab-nagrade" class="tab-content hidden">
-            <div class="card">
-                <h3>Sponzori i Popusti</h3>
-                <p style="font-size: 14px; color: #666;">Zamenite sačuvane bodove za popuste kod lokalnih partnera!</p>
-                <div id="rewards-list">
-                    <!-- Dinamički prikaz nagrada -->
-                </div>
+        <!-- SEKCIJA 2: BODOVI I NAGRADE -->
+        <div id="tab-nagrade" class="tab-content">
+            <div class="points-badge">
+                <span>Vaši sakupljeni bodovi:</span>
+                <span id="userPoints" style="font-size: 1.3rem;">0</span>
+            </div>
 
-                <!-- Unos sponzora uživo -->
-                <button class="sponsor-form-toggle" onclick="toggleSponsorForm()">+ Unesi novog sponzora (Administracija)</button>
-                <div id="sponsor-form-container" class="card hidden" style="margin-top: 15px; border: 1px solid #ddd;">
-                    <h4>Brzi unos sponzora</h4>
-                    <form onsubmit="addSponsor(event)">
-                        <input type="text" id="sp-name" placeholder="Naziv partnera / radnje" required>
-                        <input type="text" id="sp-title" placeholder="Opis popusta (npr. 10% na alat)" required>
-                        <input type="number" id="sp-cost" min="1" max="20" placeholder="Cena u bodovima (1-20)" required>
-                        <button type="submit" class="btn-submit" style="background: var(--primary);">Sačuvaj sponzora</button>
-                    </form>
+            <div class="card">
+                <h2>🎁 Dostupni popusti i nagrade</h2>
+                <div id="rewardsList">
+                    <!-- Ovde se dinamički prikazuju uneti sponzori -->
                 </div>
             </div>
+
+            <!-- ADMIN / SPONZOR MODUL ZA UNOS (Možete uneti i svoju perionicu i druge sponzore) -->
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <h2>➕ Dodaj novog sponzora / popust</h2>
+                <form id="sponsorForm">
+                    <div class="form-group">
+                        <label for="sponsorName">Naziv radnje / Sponzora (Npr. Moja Perionica)</label>
+                        <input type="text" id="sponsorName" placeholder="Naziv..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sponsorOffer">Opis popusta / nagrade (Npr. 15% popusta na usluge)</label>
+                        <input type="text" id="sponsorOffer" placeholder="Opis..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sponsorCost">Potrebno bodova (od 1 do 20)</label>
+                        <input type="number" id="sponsorCost" min="1" max="20" value="5" required>
+                    </div>
+                    <button type="submit">Sačuvaj nagradu</button>
+                </form>
+            </div>
         </div>
+
+        <!-- SEKCIJA 3: PROFIL KORISNIKA -->
+        <div id="tab-profil" class="tab-content">
+            <div class="card">
+                <h2>👤 Vaš profil</h2>
+                <p>Aplikacija čuva vaše bodove i kupone lokalno na ovom uređaju radi potpune privatnosti i jednostavnosti.</p>
+                <br>
+                <p><strong>Zvanični servisni mejl:</strong> sredikladovo@gmail.com</p>
+            </div>
+        </div>
+
     </div>
 
-    <script>
-        const RECIPIENT_EMAIL = "sredikladovo@gmail.com";
-        const DUPLICATE_RADIUS_KM = 0.03; // Oko 30 metara radijus za duplikate
+    <!-- DONJA NAVIGACIJA -->
+    <nav>
+        <button class="active" onclick="switchTab('prijava', this)">Prijava</button>
+        <button onclick="switchTab('nagrade', this)">Nagrade</button>
+        <button onclick="switchTab('profil', this)">Profil</button>
+    </nav>
 
-        // Inicijalizacija podataka iz LocalStorage
-        let userPoints = parseInt(localStorage.getItem('sk_points')) || 0;
-        let reportsHistory = JSON.parse(localStorage.getItem('sk_reports')) || [];
-        let rewards = JSON.parse(localStorage.getItem('sk_rewards')) || [
-            { id: 1, partner: "Stovarište & Farbara", desc: "10% popusta na farbe i alat", cost: 5 },
-            { id: 2, partner: "Auto-Perionica Blic", desc: "Besplatno kompletno pranje", cost: 12 }
+    <script>
+        // Upravljanje tabovima
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Učitavanje bodova i sponzora iz LocalStorage-a
+        let points = parseInt(localStorage.getItem('sk_points')) || 0;
+        document.getElementById('userPoints').innerText = points;
+
+        let sponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [
+            { id: 1, name: "Moja Perionica Kladovo", offer: "Besplatno spoljno pranje vozila", cost: 5 }
         ];
 
-        document.getElementById('user-points').innerText = userPoints;
-
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            event.currentTarget.classList.add('active');
-            if(tabName === 'nagrade') renderRewards();
-        }
-
-        function toggleSponsorForm() {
-            document.getElementById('sponsor-form-container').classList.toggle('hidden');
-        }
-
-        // Kalkulacija udaljenosti (Haversine formula za GPS)
-        function getDistanceKm(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon/2) * Math.sin(dLon/2);
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        }
-
-        function submitReport(e) {
-            e.preventDefault();
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    processReport(position.coords.latitude, position.coords.longitude);
-                }, () => {
-                    processReport(null, null); // Bez lokacije
-                });
-            } else {
-                processReport(null, null);
-            }
-        }
-
-        function processReport(lat, lng) {
-            const cat = document.getElementById('category').value;
-            const desc = document.getElementById('description').value;
-
-            // Provera da li je duplikat u radijusu od ~30m
-            let isDuplicate = false;
-            if (lat && lng) {
-                isDuplicate = reportsHistory.some(rep => {
-                    if (!rep.lat || !rep.lng) return false;
-                    return getDistanceKm(lat, lng, rep.lat, rep.lng) < DUPLICATE_RADIUS_KM;
-                });
-            }
-
-            // Slanje imejla
-            const subject = encodeURIComponent(`[Sredi Kladovo] Nova prijava: ${cat}`);
-            const body = encodeURIComponent(`Kategorija: ${cat}\nOpis: ${desc}\nLokacija: ${lat ? `${lat},${lng}` : "Nepoznata"}\nDuplikat na lokaciji: ${isDuplicate ? "DA" : "NE"}`);
-            
-            window.location.href = `mailto:${RECIPIENT_EMAIL}?subject=${subject}&body=${body}`;
-
-            // Beleženje u istoriju
-            reportsHistory.push({ lat, lng, time: new Date().getTime() });
-            localStorage.setItem('sk_reports', JSON.stringify(reportsHistory));
-
-            // Dodeljivanje bodova samo ako nije duplikat
-            if (!isDuplicate) {
-                userPoints += 1;
-                localStorage.setItem('sk_points', userPoints);
-                document.getElementById('user-points').innerText = userPoints;
-                alert("Uspešno poslato! Dobili ste 1 bod za prijavu.");
-            } else {
-                alert("Prijava je poslata inspekciji! Na ovoj lokaciji je problem već prijavljen, pa nisu dodeljeni dodatni bodovi.");
-            }
-
-            document.getElementById('issue-form').reset();
-        }
-
         function renderRewards() {
-            const list = document.getElementById('rewards-list');
+            const list = document.getElementById('rewardsList');
             list.innerHTML = '';
-            
-            rewards.forEach(rew => {
-                const canClaim = userPoints >= rew.cost;
+            if (sponsors.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-light); font-size:0.9rem;">Trenutno nema unetih nagrada. Dodajte sponzora ispod!</p>';
+                return;
+            }
+            sponsors.forEach((s) => {
                 list.innerHTML += `
-                    <div class="reward-item">
-                        <div>
-                            <strong>${rew.partner}</strong><br>
-                            <span style="font-size: 13px; color: #555;">${rew.desc}</span>
+                    <div class="sponsor-item">
+                        <div class="sponsor-info">
+                            <h4>${s.name}</h4>
+                            <p>${s.offer} <strong>(${s.cost} bodova)</strong></p>
                         </div>
-                        <div style="text-align: right;">
-                            <span class="reward-points">${rew.cost} bodova</span><br><br>
-                            <button class="btn-claim" ${canClaim ? '' : 'disabled'} onclick="claimReward('${rew.partner}', ${rew.cost})">
-                                ${canClaim ? 'Preuzmi' : 'Nedovoljno bodova'}
-                            </button>
+                        <div>
+                            <button onclick="claimReward(${s.cost})" style="padding:6px 12px; font-size:0.8rem; margin-bottom:4px;">Preuzmi</button>
+                            <button class="delete-btn" onclick="deleteSponsor(${s.id})">Obriši</button>
                         </div>
                     </div>
                 `;
             });
         }
+        renderRewards();
 
-        function addSponsor(e) {
+        // Dodavanje novog sponzora / nagrade u hodu
+        document.getElementById('sponsorForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const partner = document.getElementById('sp-name').value;
-            const desc = document.getElementById('sp-title').value;
-            const cost = parseInt(document.getElementById('sp-cost').value);
+            const name = document.getElementById('sponsorName').value;
+            const offer = document.getElementById('sponsorOffer').value;
+            const cost = parseInt(document.getElementById('sponsorCost').value);
 
-            rewards.push({ id: Date.now(), partner, desc, cost });
-            localStorage.setItem('sk_rewards', JSON.stringify(rewards));
-            
-            alert(`Sponzor "${partner}" uspešno unet!`);
-            document.getElementById('sp-name').value = '';
-            document.getElementById('sp-title').value = '';
-            document.getElementById('sp-cost').value = '';
-            
-            toggleSponsorForm();
+            const newSponsor = { id: Date.now(), name, offer, cost };
+            sponsors.push(newSponsor);
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+
+            renderRewards();
+            this.reset();
+            alert('Sponzor i nagrada su uspešno dodati!');
+        });
+
+        // Brisanje sponzora
+        function deleteSponsor(id) {
+            sponsors = sponsors.filter(s => s.id !== id);
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
             renderRewards();
         }
 
-        function claimReward(partner, cost) {
-            if (userPoints >= cost) {
-                userPoints -= cost;
-                localStorage.setItem('sk_points', userPoints);
-                document.getElementById('user-points').innerText = userPoints;
-                alert(`Uspešno ste iskoristili kupon kod partnera: ${partner}! Pokažite ovaj ekran radniku.`);
-                renderRewards();
+        // Preuzimanje nagrade
+        function claimReward(cost) {
+            if (points >= cost) {
+                points -= cost;
+                localStorage.setItem('sk_points', points);
+                document.getElementById('userPoints').innerText = points;
+                alert('Uspešno ste preuzeli kupon! Pokažite ovaj ekran u radnji.');
+            } else {
+                alert('Nemate dovoljno bodova za ovu nagradu.');
             }
         }
+
+        // Slanje prijave sa zaštitom od duplih prijava na istoj lokaciji
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const category = document.getElementById('category').value;
+            const description = document.getElementById('description').value.trim().toLowerCase();
+
+            // Provera duplikata (Pametna zaštita)
+            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
+            let isDuplicate = reports.some(r => r.category === category && r.description === description);
+
+            if (isDuplicate) {
+                alert('Obaveštenje: Slična prijava za ovu lokaciju je već zabeležena. Prijava je prosleđena inspekciji, ali se bodovi ne dodeljuju duplki.');
+            } else {
+                reports.push({ category, description, time: Date.now() });
+                localStorage.setItem('sk_reports', JSON.stringify(reports));
+
+                // Dodelu 1 boda za uspešnu novu prijavu
+                points += 1;
+                localStorage.setItem('sk_points', points);
+                document.getElementById('userPoints').innerText = points;
+                alert('Prijava je uspešno poslata na sredikladovo@gmail.com i dobili ste 1 bod!');
+            }
+
+            // Simulacija slanja na mejl (mailto link ili backend)
+            const mailSubject = encodeURIComponent("Nova prijava: " + category);
+            const mailBody = encodeURIComponent("Kategorija: " + category + "\nOpis/Lokacija: " + description);
+            window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+
+            this.reset();
+        });
     </script>
 </body>
 </html>
