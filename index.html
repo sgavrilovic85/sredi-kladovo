@@ -82,7 +82,7 @@
             color: var(--text);
         }
 
-        /* REKONSTRUKCIJA DIZAJNA SA SLIKA */
+        /* BANERI SA SVIM 7 SLIKA */
         .category-banners {
             display: flex;
             flex-direction: column;
@@ -167,32 +167,25 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* BOJE I SLIKE PREMA POSLATOJ KOLEKCIJI SLIKA */
-        /* 1. Bacanje otpada - Zelena */
+        /* SVIH 7 KATEGORIJA SA SLIKAMA I BOJAMA */
         .c-1 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1532996122724-e3c359a0b15b?auto=format&fit=crop&w=400&q=80'); }
         .c-1 .banner-badge-icon, .c-1 .banner-number { background-color: #10b981; }
 
-        /* 2. Nepropisno parkiranje - Crvena */
         .c-2 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=400&q=80'); }
         .c-2 .banner-badge-icon, .c-2 .banner-number { background-color: #ef4444; }
 
-        /* 3. Psi lutalice - Plava */
         .c-3 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80'); }
         .c-3 .banner-badge-icon, .c-3 .banner-number { background-color: #3b82f6; }
 
-        /* 4. Požar - Narandžasta */
         .c-4 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1508873696983-2df5c920aac9?auto=format&fit=crop&w=400&q=80'); }
         .c-4 .banner-badge-icon, .c-4 .banner-number { background-color: #f97316; }
 
-        /* 5. Divlja deponija / zagađenje - Tirkizno/Zelena */
         .c-5 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1611288883505-c4e97d124032?auto=format&fit=crop&w=400&q=80'); }
         .c-5 .banner-badge-icon, .c-5 .banner-number { background-color: #0d9488; }
 
-        /* 6. Rupa na putu - Tamno siva */
         .c-6 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=400&q=80'); }
         .c-6 .banner-badge-icon, .c-6 .banner-number { background-color: #475569; }
 
-        /* 7. Ostalo - Ljubičasta */
         .c-7 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=80'); }
         .c-7 .banner-badge-icon, .c-7 .banner-number { background-color: #8b5cf6; }
 
@@ -381,7 +374,7 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" required onchange="handleImage(this)">
 
-                    <!-- DIZAJN KATEGORIJA KAO NA VAŠIM SLIKAMA -->
+                    <!-- SVIH 7 KATEGORIJA SA SLIKAMA -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
@@ -473,7 +466,7 @@
                         </div>
                     </div>
 
-                    <!-- Opis sa primjerom unosa -->
+                    <!-- Opis sa primerom unosa -->
                     <div class="form-group">
                         <label>Kratak opis i detalji</label>
                         <textarea id="description" rows="3" placeholder="Npr. Ispred zgrade u ulici 22. Septembra nalazi se nepropisno parkirano vozilo..." required></textarea>
