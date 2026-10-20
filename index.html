@@ -82,17 +82,16 @@
             color: var(--text);
         }
 
-        /* BANERI - SVI 100% EDNAKE VISINE I ŠIRINE */
+        /* BANERI - SVI PRIRODNO VIDLJIVI I CELE SLIKE BEZ ODSECANJA */
         .category-banners {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 15px;
         }
 
         .category-banner {
             position: relative;
-            height: 100px; /* Fiksirana jednaka visina za sve kartice */
             border-radius: 14px;
             overflow: hidden;
             border: 2px solid var(--border);
@@ -102,13 +101,12 @@
             background: #ffffff;
             padding: 0;
             display: block;
+            line-height: 0;
         }
 
         .category-banner img.full-banner-img {
             width: 100%;
-            height: 100%;
-            object-fit: cover; /* Popunjava celu površinu bez razvlačenja */
-            object-position: center;
+            height: auto;
             display: block;
         }
 
