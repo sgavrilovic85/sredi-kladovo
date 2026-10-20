@@ -82,104 +82,57 @@
             color: var(--text);
         }
 
-        /* VHRUNSKI PRO DIZAJN KATEGORIJA TAČNO PO VAŠEM UZORKU */
-        .category-banners {
+        /* ČIST I PREGLEDAN DIZAJN KATEGORIJA */
+        .category-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 15px;
         }
 
-        .category-card-pro {
-            background: #ffffff;
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 12px 16px;
+        .category-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            position: relative;
-            overflow: hidden;
+            background: #fff;
         }
 
-        .category-card-pro:hover {
-            border-color: #cbd5e1;
-        }
-
-        .category-card-pro.selected {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-            background-color: #f0fdf4;
-        }
-
-        .card-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .thumb-img {
-            width: 75px;
-            height: 52px;
-            border-radius: 8px;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-        }
-
-        .badge-number {
-            width: 34px;
-            height: 34px;
+        .category-num {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            color: white;
+            background-color: #f1f5f9;
+            color: var(--text);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1rem;
-            flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        }
-
-        .bg-col-1 { background-color: #059669; }
-        .bg-col-2 { background-color: #dc2626; }
-        .bg-col-3 { background-color: #0284c7; }
-        .bg-col-4 { background-color: #d97706; }
-        .bg-col-5 { background-color: #0d9488; }
-        .bg-col-6 { background-color: #475569; }
-        .bg-col-7 { background-color: #7c3aed; }
-
-        .card-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .card-title {
             font-size: 0.95rem;
-            font-weight: 700;
-            color: #0f172a;
-            line-height: 1.25;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
         }
 
-        .card-desc {
-            font-size: 0.78rem;
-            color: var(--text-light);
-            line-height: 1.2;
+        .category-item span {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
         }
 
-        .card-arrow {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #cbd5e1;
-            padding-left: 8px;
+        .category-item.selected {
+            border-color: var(--primary);
+            background-color: #ecfdf5;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);
         }
 
-        .category-card-pro.selected .card-arrow {
-            color: var(--primary);
+        .category-item.selected .category-num {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
         input, textarea {
@@ -361,101 +314,45 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" required onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA U PRO DIZAJNU SA SLIKAMA I BROJEVIMA -->
+                    <!-- 7 KATEGORIJA U UREDNOM I STABILNOM FORMATU -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
-                        <div class="category-banners">
-                            <!-- 1 -->
-                            <div class="category-card-pro selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <div class="card-left">
-                                    <img src="https://images.unsplash.com/photo-1591193123857-7f070412674e?auto=format&fit=crop&w=150&q=80" class="thumb-img" alt="Otpad">
-                                    <div class="badge-number bg-col-1">1</div>
-                                    <div class="card-info">
-                                        <div class="card-title">Bacanje otpada na javnoj površini</div>
-                                        <div class="card-desc">Pravilno odlaganje čuva našu okolinu.</div>
-                                    </div>
-                                </div>
-                                <div class="card-arrow">›</div>
+                        <div class="category-list">
+                            <div class="category-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <div class="category-num">1</div>
+                                <span>Bacanje otpada na javnoj površini</span>
                             </div>
 
-                            <!-- 2 -->
-                            <div class="category-card-pro" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <div class="card-left">
-                                    <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=150&q=80" class="thumb-img" alt="Parkiranje">
-                                    <div class="badge-number bg-col-2">2</div>
-                                    <div class="card-info">
-                                        <div class="card-title">Nepropisno parkiranje na trotoaru ili zelenilu</div>
-                                        <div class="card-desc">Ostavimo prostor za pešake i zelene površine.</div>
-                                    </div>
-                                </div>
-                                <div class="card-arrow">›</div>
+                            <div class="category-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <div class="category-num">2</div>
+                                <span>Nepropisno parkiranje na trotoaru ili zelenoj površini</span>
                             </div>
 
-                            <!-- 3 -->
-                            <div class="category-card-pro" onclick="selectCategory(this, 'Psi lutalice')">
-                                <div class="card-left">
-                                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=150&q=80" class="thumb-img" alt="Psi">
-                                    <div class="badge-number bg-col-3">3</div>
-                                    <div class="card-info">
-                                        <div class="card-title">Psi lutalice</div>
-                                        <div class="card-desc">Briga o životinjama je briga o zajednici.</div>
-                                    </div>
-                                </div>
-                                <div class="card-arrow">›</div>
+                            <div class="category-item" onclick="selectCategory(this, 'Psi lutalice')">
+                                <div class="category-num">3</div>
+                                <span>Psi lutalice</span>
                             </div>
 
-                            <!-- 4 -->
-                            <div class="category-card-pro" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
-                                <div class="card-left">
-                                    <img src="https://images.unsplash.com/photo-1508873696983-2df5c920aac9?auto=format&fit=crop&w=150&q=80" class="thumb-img" alt="Požar">
-                                    <div class="badge-number bg-col-4">4</div>
-                                    <div class="card-info">
-                                        <div class="card-title">Vatra na otvorenom - požar - dim</div>
-                                        <div class="card-desc">Brza reakcija sprečava štetu.</div>
-                                    </div>
-                                </div>
-                                <div class="card-arrow">›</div>
+                            <div class="category-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <div class="category-num">4</div>
+                                <span>Vatra na otvorenom - požar - dim</span>
                             </div>
 
-                            <!-- 5 -->
-                            <div class="category-card-pro" onclick="selectCategory(this, 'Divlja deponija')">
-                                <div class="card-left">
-                                    <img src="https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=150&q=80" class="thumb-img" alt="Deponija">
-                                    <div class="badge-number bg-col-5">5</div>
-                                    <div class="card-info">
-                                        <div class="card-title">Divlja deponija</div>
-                                        <div class="card-desc">Prijavite nelegalno odlaganje otpada.</div>
-                                    </div>
-                                </div>
-                                <div class="card-arrow">›</div>
+                            <div class="category-item" onclick="selectCategory(this, 'Divlja deponija')">
+                                <div class="category-num">5</div>
+                                <span>Divlja deponija</span>
                             </div>
 
-                            <!-- 6 -->
-                            <div class="category-card-pro" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <div class="card-left">
-                                    <img src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=150&q=80" class="thumb-img" alt="Rupa">
-                                    <div class="badge-number bg-col-6">6</div>
-                                    <div class="card-info">
-                                        <div class="card-title">Rupa na putu - oštećen kolovoz</div>
-                                        <div class="card-desc">Za bezbedniju vožnju našim ulicama.</div>
-                                    </div>
-                                </div>
-                                <div class="card-arrow">›</div>
+                            <div class="category-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <div class="category-num">6</div>
+                                <span>Rupa na putu - oštećen kolovoz</span>
                             </div>
 
-                            <!-- 7 -->
-                            <div class="category-card-pro" onclick="selectCategory(this, 'Ostalo')">
-                                <div class="card-left">
-                                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=150&q=80" class="thumb-img" alt="Ostalo">
-                                    <div class="badge-number bg-col-7">7</div>
-                                    <div class="card-info">
-                                        <div class="card-title">Ostalo</div>
-                                        <div class="card-desc">Svi ostali komunalni problemi.</div>
-                                    </div>
-                                </div>
-                                <div class="card-arrow">›</div>
+                            <div class="category-item" onclick="selectCategory(this, 'Ostalo')">
+                                <div class="category-num">7</div>
+                                <span>Ostalo</span>
                             </div>
                         </div>
                     </div>
@@ -550,7 +447,7 @@
         let map = null;
 
         function selectCategory(element, catName) {
-            document.querySelectorAll('.category-card-pro').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.category-item').forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selectedCategory').value = catName;
         }
@@ -696,7 +593,7 @@
             }
         }
 
-        // Slanje prijave sa slikom i GPS lokacijom
+        // Slanje prijave sa slikom i GPS lokacijom na mejl
         document.getElementById('reportForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const category = document.getElementById('selectedCategory').value;
