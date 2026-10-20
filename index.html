@@ -18,12 +18,106 @@ header p{font-size:.85rem;opacity:.95}
 .card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 4px rgba(0,0,0,.05);border:1px solid var(--border)}
 .form-group{margin-bottom:15px}
 label{display:block;margin-bottom:8px;font-weight:600;font-size:.9rem}
-.cats{display:flex;flex-direction:column;gap:10px}
-.cat{display:block;width:100%;padding:0;border:3px solid transparent;border-radius:14px;overflow:hidden;background:none;cursor:pointer;opacity:.65;transition:.2s}
-.cat img{display:block;width:100%;height:auto}
-.cat.sel{opacity:1;border-color:var(--primary);box-shadow:0 0 0 3px rgba(16,185,129,.3)}
+
+/* MODERNI KARTICA-DIZAJN KAO NA PRIMERU (BEZ EKSTERNIH SLIKA) */
+.cats{display:flex;flex-direction:column;gap:12px}
+.cat-card {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 85px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: #ffffff;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding-right: 12px;
+}
+
+/* Leva strana sa slikom/gradijentom i piktogramom u krugu */
+.cat-media {
+  width: 120px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+}
+
+.c1 .cat-media { background: linear-gradient(135deg, #10b981, #059669); }
+.c2 .cat-media { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.c3 .cat-media { background: linear-gradient(135deg, #0284c7, #0369a1); }
+.c4 .cat-media { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.c5 .cat-media { background: linear-gradient(135deg, #0d9488, #0f766e); }
+.c6 .cat-media { background: linear-gradient(135deg, #475569, #334155); }
+.c7 .cat-media { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+
+.cat-icon-circle {
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  margin-right: 10px;
+}
+
+/* Srednja strana sa brojem i tekstom */
+.cat-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+  padding-left: 5px;
+}
+
+.cat-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.c1 .cat-num { background: #10b981; }
+.c2 .cat-num { background: #ef4444; }
+.c3 .cat-num { background: #0284c7; }
+.c4 .cat-num { background: #f59e0b; }
+.c5 .cat-num { background: #0d9488; }
+.c6 .cat-num { background: #475569; }
+.c7 .cat-num { background: #7c3aed; }
+
+.cat-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.cat-card.sel {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
+  background: #f0fdf4;
+}
+
+.cat-card:hover {
+  transform: translateY(-1px);
+}
+
 textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;outline:none;background:#fff}
-.photo{position:relative;width:100%;height:200px;border:2px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f1f5f9;margin-bottom:15px;cursor:pointer;text-align:center;color:var(--light)}
+.photo{position:relative;width:100%;height:180px;border:2px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f1f5f9;margin-bottom:15px;cursor:pointer;text-align:center;color:var(--light)}
 .photo img{width:100%;height:100%;object-fit:cover}
 .loc{font-size:.88rem;margin-bottom:15px;font-weight:600;color:var(--dark)}
 .loc.bad{color:#d93025}
@@ -53,7 +147,12 @@ nav button.active{color:var(--primary);background:#f0fdf4}
 
 <div id="tab-prijava" class="tab active"><div class="card">
   <input type="file" id="cam" accept="image/*" capture="environment" hidden>
-  <div class="photo" id="photoBox"><div><span style="font-size:2rem">📷</span><p>Dodirni da uslikaš problem</p></div></div>
+  <div class="photo" id="photoBox">
+    <div>
+      <span style="font-size:2rem">📷</span>
+      <p style="font-weight:600;margin-top:4px;">Dodirni da uslikaš problem</p>
+    </div>
+  </div>
   <button type="button" class="btn2" id="retake" hidden>Slikaj ponovo</button>
 
   <div class="form-group">
@@ -94,29 +193,50 @@ nav button.active{color:var(--primary);background:#f0fdf4}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* ===== PODEŠAVANJE: popuni posle Supabase koraka. Dok je prazno, radi test režim na ovom telefonu. ===== */
-const SUPABASE_URL="";   // npr. https://abcdxyz.supabase.co
-const SUPABASE_KEY="";   // "anon public" ključ (javni, sme da bude u kodu)
-/* ========================================================================================================= */
+/* ===== PODEŠAVANJE: popuni posle Supabase koraka ===== */
+const SUPABASE_URL="";   
+const SUPABASE_KEY="";   
+/* ====================================================== */
 const KLADOVO=[44.6086,22.6122];
-const CATS=[
- "Bacanje otpada na javnoj površini","Nepropisno parkiranje (trotoar / zelenilo)","Psi lutalice",
- "Vatra na otvorenom / Požar / Dim","Divlja deponija","Rupa na putu / Oštećen kolovoz","Ostali komunalni problemi"];
+
+const CAT_DATA = [
+  { title: "Bacanje otpada na javnoj površini", icon: "🗑️", class: "c1", num: 1 },
+  { title: "Nepropisno parkiranje (trotoar / zelenilo)", icon: "🚫", class: "c2", num: 2 },
+  { title: "Psi lutalice", icon: "🐕", class: "c3", num: 3 },
+  { title: "Vatra na otvorenom / Požar / Dim", icon: "🔥", class: "c4", num: 4 },
+  { title: "Divlja deponija", icon: "⚠️", class: "c5", num: 5 },
+  { title: "Rupa na putu / Oštećen kolovoz", icon: "🛣️", class: "c6", num: 6 },
+  { title: "Ostali komunalni problemi", icon: "📌", class: "c7", num: 7 }
+];
+
 const ST=["Primljeno","U radu","Rešeno"],COL=["#f97316","#1d6fe0","#1f9d55"];
 const cloud=!!(SUPABASE_URL&&SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let cat=CATS[0],photo=null,pos=null,map=null,layer=null;
+let cat=CAT_DATA[0].title,photo=null,pos=null,map=null,layer=null;
 
-/* kategorije (slike kat1.jpg ... kat7.jpg) */
-CATS.forEach((c,i)=>{
- const b=document.createElement("button");b.type="button";b.className="cat"+(i===0?" sel":"");
- b.setAttribute("aria-label",c);b.innerHTML='<img src="kat'+(i+1)+'.jpg" alt="'+esc(c)+'">';
- b.onclick=()=>{document.querySelectorAll(".cat").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");cat=c};
- $("cats").appendChild(b);
+/* Renderovanje kartica kategorija sa novim stilom */
+CAT_DATA.forEach((item, i)=>{
+ const div=document.createElement("div");
+ div.className=`cat-card ${item.class}` + (i===0 ? " sel" : "");
+ div.onclick=()=>{
+   document.querySelectorAll(".cat-card").forEach(x=>x.classList.remove("sel"));
+   div.classList.add("sel");
+   cat=item.title;
+ };
+ div.innerHTML=`
+   <div class="cat-media">
+     <div class="cat-icon-circle">${item.icon}</div>
+   </div>
+   <div class="cat-body">
+     <div class="cat-num">${item.num}</div>
+     <div class="cat-title">${esc(item.title)}</div>
+   </div>
+ `;
+ $("cats").appendChild(div);
 });
 
-/* tabovi */
+/* Tabovi */
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
@@ -124,7 +244,7 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
  if(b.dataset.t==="mapa")setTimeout(loadMap,100);
 });
 
-/* slika (smanjena na ~1000 px da stane u bazu) */
+/* Slikanje */
 $("photoBox").onclick=()=>$("cam").click();
 $("retake").onclick=()=>$("cam").click();
 $("cam").onchange=e=>{
@@ -138,7 +258,7 @@ $("cam").onchange=e=>{
  r.readAsDataURL(f);
 };
 
-/* GPS: obavezan, nema izmišljene lokacije */
+/* GPS */
 function getLoc(){
  $("loc").className="loc";$("loc").textContent="📍 Uzimanje GPS lokacije...";$("relocate").hidden=true;
  if(!navigator.geolocation){fail();return}
@@ -152,7 +272,7 @@ $("relocate").onclick=getLoc;
 function upd(){$("send").disabled=!(photo&&pos)}
 getLoc();
 
-/* Supabase */
+/* Supabase / Slanje */
 async function sb(path,opt){
  const r=await fetch(SUPABASE_URL+path,{...opt,headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,...(opt.headers||{})}});
  if(!r.ok)throw new Error(await r.text());return r}
@@ -173,12 +293,12 @@ $("send").onclick=async()=>{
   }
   $("msg").className="msg ok";$("msg").textContent="✅ Prijava je zabeležena na mapi. Hvala!"+(cloud?"":" (test režim: vidi je samo ovaj telefon)");
   photo=null;$("desc").value="";$("retake").hidden=true;
-  $("photoBox").innerHTML='<div><span style="font-size:2rem">📷</span><p>Dodirni da uslikaš problem</p></div>';
+  $("photoBox").innerHTML='<div><span style="font-size:2rem">📷</span><p style="font-weight:600;margin-top:4px;">Dodirni da uslikaš problem</p></div>';
  }catch(e){console.error(e);$("msg").className="msg err";$("msg").textContent="Slanje nije uspelo. Pokušaj ponovo."}
  upd();
 };
 
-/* mapa */
+/* Mapa Kladova */
 async function loadMap(){
  if(!map){
   map=L.map("map").setView(KLADOVO,14);
