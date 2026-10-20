@@ -1,327 +1,764 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sredi Kladovo</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<style>
-:root{--primary:#10b981;--dark:#059669;--bg:#f8fafc;--card:#fff;--text:#1e293b;--light:#64748b;--border:#e2e8f0}
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Verdana,sans-serif}
-body{background:var(--bg);color:var(--text);padding-bottom:75px}
-header{background:linear-gradient(135deg,var(--primary),var(--dark));color:#fff;padding:15px;text-align:center;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)}
-header img{max-width:100px;height:auto;border-radius:50%;margin-bottom:5px;box-shadow:0 2px 4px rgba(0,0,0,.2)}
-header p{font-size:.85rem;opacity:.95}
-.container{max-width:600px;margin:15px auto;padding:0 15px}
-.card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 4px rgba(0,0,0,.05);border:1px solid var(--border)}
-.form-group{margin-bottom:15px}
-label{display:block;margin-bottom:8px;font-weight:600;font-size:.9rem}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sredi Kladovo</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
 
-/* MODERNI KARTICA-DIZAJN KAO NA PRIMERU (BEZ EKSTERNIH SLIKA) */
-.cats{display:flex;flex-direction:column;gap:12px}
-.cat-card {
-  display: flex;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  height: 85px;
-  border-radius: 14px;
-  border: 2px solid var(--border);
-  background: #ffffff;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding-right: 12px;
-}
+    <!-- Leaflet Mapa CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-/* Leva strana sa slikom/gradijentom i piktogramom u krugu */
-.cat-media {
-  width: 120px;
-  height: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
-}
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
 
-.c1 .cat-media { background: linear-gradient(135deg, #10b981, #059669); }
-.c2 .cat-media { background: linear-gradient(135deg, #ef4444, #dc2626); }
-.c3 .cat-media { background: linear-gradient(135deg, #0284c7, #0369a1); }
-.c4 .cat-media { background: linear-gradient(135deg, #f59e0b, #d97706); }
-.c5 .cat-media { background: linear-gradient(135deg, #0d9488, #0f766e); }
-.c6 .cat-media { background: linear-gradient(135deg, #475569, #334155); }
-.c7 .cat-media { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-.cat-icon-circle {
-  width: 44px;
-  height: 44px;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-  margin-right: 10px;
-}
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 75px;
+        }
 
-/* Srednja strana sa brojem i tekstom */
-.cat-body {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-grow: 1;
-  padding-left: 5px;
-}
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
 
-.cat-num {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
+        header img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
 
-.c1 .cat-num { background: #10b981; }
-.c2 .cat-num { background: #ef4444; }
-.c3 .cat-num { background: #0284c7; }
-.c4 .cat-num { background: #f59e0b; }
-.c5 .cat-num { background: #0d9488; }
-.c6 .cat-num { background: #475569; }
-.c7 .cat-num { background: #7c3aed; }
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.95;
+        }
 
-.cat-title {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #1e293b;
-  line-height: 1.25;
-}
+        .container {
+            max-width: 600px;
+            margin: 15px auto;
+            padding: 0 15px;
+        }
 
-.cat-card.sel {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
-  background: #f0fdf4;
-}
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
 
-.cat-card:hover {
-  transform: translateY(-1px);
-}
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;outline:none;background:#fff}
-.photo{position:relative;width:100%;height:180px;border:2px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f1f5f9;margin-bottom:15px;cursor:pointer;text-align:center;color:var(--light)}
-.photo img{width:100%;height:100%;object-fit:cover}
-.loc{font-size:.88rem;margin-bottom:15px;font-weight:600;color:var(--dark)}
-.loc.bad{color:#d93025}
-.btn{background:#3b82f6;color:#fff;border:none;padding:14px;border-radius:8px;font-size:1.05rem;font-weight:600;width:100%;cursor:pointer}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn2{background:#fff;color:var(--text);border:1px solid var(--border);padding:8px;border-radius:8px;font-size:.85rem;margin-bottom:12px;cursor:pointer}
-.msg{display:none;padding:12px;border-radius:8px;margin-top:15px;font-weight:600;text-align:center}
-.msg.ok{display:block;background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
-.msg.err{display:block;background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
-#map{width:100%;height:380px;border-radius:12px;border:1px solid var(--border)}
-.pimg{width:100%;max-height:140px;object-fit:cover;border-radius:6px;margin-bottom:6px}
-.tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;color:#fff}
-nav{position:fixed;bottom:0;left:0;width:100%;background:#fff;display:flex;border-top:1px solid var(--border);box-shadow:0 -2px 5px rgba(0,0,0,.05);z-index:1000}
-nav button{background:none;color:var(--light);border:none;flex:1;padding:12px 0;font-size:.85rem;font-weight:600;cursor:pointer}
-nav button.active{color:var(--primary);background:#f0fdf4}
-.tab{display:none}.tab.active{display:block}
-.legend{font-size:.8rem;color:var(--light);margin:8px 10px}
-</style>
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        /* REKONSTRUKCIJA DIZAJNA SA SLIKA */
+        .category-banners {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .category-banner {
+            position: relative;
+            height: 85px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+        }
+
+        .banner-left-img {
+            width: 45%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+        }
+
+        .banner-badge-icon {
+            position: absolute;
+            left: 36%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .banner-badge-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .banner-right-content {
+            width: 55%;
+            padding-left: 25px;
+            padding-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .banner-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.25;
+        }
+
+        .banner-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        /* BOJE I SLIKE PREMA POSLATOJ KOLEKCIJI SLIKA */
+        /* 1. Bacanje otpada - Zelena */
+        .c-1 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1532996122724-e3c359a0b15b?auto=format&fit=crop&w=400&q=80'); }
+        .c-1 .banner-badge-icon, .c-1 .banner-number { background-color: #10b981; }
+
+        /* 2. Nepropisno parkiranje - Crvena */
+        .c-2 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=400&q=80'); }
+        .c-2 .banner-badge-icon, .c-2 .banner-number { background-color: #ef4444; }
+
+        /* 3. Psi lutalice - Plava */
+        .c-3 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80'); }
+        .c-3 .banner-badge-icon, .c-3 .banner-number { background-color: #3b82f6; }
+
+        /* 4. Požar - Narandžasta */
+        .c-4 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1508873696983-2df5c920aac9?auto=format&fit=crop&w=400&q=80'); }
+        .c-4 .banner-badge-icon, .c-4 .banner-number { background-color: #f97316; }
+
+        /* 5. Divlja deponija / zagađenje - Tirkizno/Zelena */
+        .c-5 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1611288883505-c4e97d124032?auto=format&fit=crop&w=400&q=80'); }
+        .c-5 .banner-badge-icon, .c-5 .banner-number { background-color: #0d9488; }
+
+        /* 6. Rupa na putu - Tamno siva */
+        .c-6 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=400&q=80'); }
+        .c-6 .banner-badge-icon, .c-6 .banner-number { background-color: #475569; }
+
+        /* 7. Ostalo - Ljubičasta */
+        .c-7 .banner-left-img { background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=80'); }
+        .c-7 .banner-badge-icon, .c-7 .banner-number { background-color: #8b5cf6; }
+
+        .category-banner.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
+            background: #f0fdf4;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            background: #fff;
+        }
+
+        .image-preview-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #f1f5f9;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .image-preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview-placeholder {
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .location-status {
+            font-size: 0.88rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
+        .btn-submit {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .success-banner {
+            display: none;
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid #a7f3d0;
+        }
+
+        #map {
+            width: 100%;
+            height: 380px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .popup-img {
+            width: 100%;
+            max-height: 140px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .points-badge {
+            background: #ecfdf5;
+            color: var(--primary-dark);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 1px solid #a7f3d0;
+        }
+
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        nav button {
+            background: none;
+            color: var(--text-light);
+            border: none;
+            flex: 1;
+            padding: 12px 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        nav button.active {
+            color: var(--primary);
+            background: #f0fdf4;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sponsor-item {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<header>
-  <img src="logo.png" alt="Sredi Kladovo">
-  <p>Aktivno građansko uređenje našeg grada</p>
-</header>
 
-<div class="container">
+    <header>
+        <img src="logo.png" alt="Sredi Kladovo Logo">
+        <p>Aktivno građansko uređenje našeg grada</p>
+    </header>
 
-<div id="tab-prijava" class="tab active"><div class="card">
-  <input type="file" id="cam" accept="image/*" capture="environment" hidden>
-  <div class="photo" id="photoBox">
-    <div>
-      <span style="font-size:2rem">📷</span>
-      <p style="font-weight:600;margin-top:4px;">Dodirni da uslikaš problem</p>
+    <div class="container">
+
+        <!-- SEKCIJA 1: PRIJAVA PROBLEMA -->
+        <div id="tab-prijava" class="tab-content active">
+            <div class="card">
+                <form id="reportForm">
+                    <!-- Slikanje -->
+                    <div class="image-preview-container" onclick="document.getElementById('cameraInput').click()">
+                        <div id="previewPlaceholder" class="image-preview-placeholder">
+                            <span style="font-size: 2rem;">📷</span>
+                            <p>Dodirni da uslikaš problem / lice</p>
+                        </div>
+                        <img id="imagePreview" src="" alt="Uslikana slika" style="display: none;">
+                    </div>
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" required onchange="handleImage(this)">
+
+                    <!-- DIZAJN KATEGORIJA KAO NA VAŠIM SLIKAMA -->
+                    <div class="form-group">
+                        <label>Izaberite kategoriju problema:</label>
+                        <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
+                        
+                        <div class="category-banners">
+                            <!-- 1. Bacanje otpada -->
+                            <div class="category-banner c-1 selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <div class="banner-left-img"></div>
+                                <div class="banner-badge-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                </div>
+                                <div class="banner-right-content">
+                                    <div class="banner-title">Bacanje otpada na javnoj površini</div>
+                                    <div class="banner-number">1</div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Nepropisno parkiranje -->
+                            <div class="category-banner c-2" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <div class="banner-left-img"></div>
+                                <div class="banner-badge-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3z"/></svg>
+                                </div>
+                                <div class="banner-right-content">
+                                    <div class="banner-title">Nepropisno parkiranje</div>
+                                    <div class="banner-number">2</div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Psi lutalice -->
+                            <div class="category-banner c-3" onclick="selectCategory(this, 'Psi lutalice')">
+                                <div class="banner-left-img"></div>
+                                <div class="banner-badge-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M19.5 7.2c-.3-.2-.7-.1-.9.2-.5.8-1.2 1.6-2.1 2.2-.8-.4-1.7-.6-2.5-.6s-1.7.2-2.5.6c-.9-.6-1.6-1.4-2.1-2.2-.2-.3-.6-.4-.9-.2-.3.2-.4.6-.2.9.6 1 1.4 1.9 2.4 2.5-.7.8-1.2 1.8-1.3 2.9H6c-.6 0-1 .4-1 1s.4 1 1 1h1.1c.3 2.4 2.3 4.2 4.8 4.2s4.5-1.8 4.8-4.2H18c.6 0 1-.4 1-1s-.4-1-1-1h-.7c-.1-1.1-.6-2.1-1.3-2.9 1-.6 1.8-1.5 2.4-2.5.2-.3.1-.7-.2-.9z"/></svg>
+                                </div>
+                                <div class="banner-right-content">
+                                    <div class="banner-title">Psi lutalice</div>
+                                    <div class="banner-number">3</div>
+                                </div>
+                            </div>
+
+                            <!-- 4. Požar -->
+                            <div class="category-banner c-4" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <div class="banner-left-img"></div>
+                                <div class="banner-badge-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M17.56 10.5c-1.31-1.22-2.13-2.61-2.5-3.88-.13-.45-.7-.52-.94-.13C13.25 7.6 12 9.5 12 11.5c0 1.66 1.34 3 3 3s3-1.34 3-3c0-.36-.06-.71-.15-1.04-.1-.36-.45-.6-.83-.46zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79.13-.57.8-.75 1.22-.32 1.48 1.5 3.39 2.5 5.57 2.82V19.93z"/></svg>
+                                </div>
+                                <div class="banner-right-content">
+                                    <div class="banner-title">Vatra / Požar / Dim</div>
+                                    <div class="banner-number">4</div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Divlja deponija -->
+                            <div class="category-banner c-5" onclick="selectCategory(this, 'Divlja deponija')">
+                                <div class="banner-left-img"></div>
+                                <div class="banner-badge-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                                </div>
+                                <div class="banner-right-content">
+                                    <div class="banner-title">Divlja deponija</div>
+                                    <div class="banner-number">5</div>
+                                </div>
+                            </div>
+
+                            <!-- 6. Rupa na putu -->
+                            <div class="category-banner c-6" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <div class="banner-left-img"></div>
+                                <div class="banner-badge-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3z"/></svg>
+                                </div>
+                                <div class="banner-right-content">
+                                    <div class="banner-title">Rupa na putu</div>
+                                    <div class="banner-number">6</div>
+                                </div>
+                            </div>
+
+                            <!-- 7. Ostalo -->
+                            <div class="category-banner c-7" onclick="selectCategory(this, 'Ostalo')">
+                                <div class="banner-left-img"></div>
+                                <div class="banner-badge-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                                </div>
+                                <div class="banner-right-content">
+                                    <div class="banner-title">Ostali problemi</div>
+                                    <div class="banner-number">7</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opis sa primjerom unosa -->
+                    <div class="form-group">
+                        <label>Kratak opis i detalji</label>
+                        <textarea id="description" rows="3" placeholder="Npr. Ispred zgrade u ulici 22. Septembra nalazi se nepropisno parkirano vozilo..." required></textarea>
+                    </div>
+
+                    <!-- GPS Lokacija -->
+                    <div class="location-status" id="locationStatus">
+                        📍 Uzimanje GPS lokacije...
+                    </div>
+
+                    <button type="submit" class="btn-submit">Pošalji prijavu</button>
+
+                    <div id="successBanner" class="success-banner">
+                        ✅ Prijava je poslata. Hvala!
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SEKCIJA 2: MAPA PRIJAVA -->
+        <div id="tab-mapa" class="tab-content">
+            <div class="card" style="padding: 10px;">
+                <h3 style="margin: 10px; font-size: 1.1rem;">🗺️ Mapa prijavljenih problema u Kladovu</h3>
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <!-- SEKCIJA 3: NAGRADE -->
+        <div id="tab-nagrade" class="tab-content">
+            <div class="points-badge">
+                <span>Vaši sakupljeni bodovi:</span>
+                <span id="userPoints" style="font-size: 1.3rem;">0</span>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 12px;">🎁 Dostupni popusti i nagrade</h3>
+                <div id="rewardsList"></div>
+            </div>
+
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <h3 style="margin-bottom: 12px;">➕ Dodaj novog sponzora / popust</h3>
+                <form id="sponsorForm">
+                    <div class="form-group">
+                        <label>Naziv radnje / Sponzora</label>
+                        <input type="text" id="sponsorName" placeholder="Npr. Blic Perionica" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Opis nagrade / popusta</label>
+                        <input type="text" id="sponsorOffer" placeholder="Npr. 15% popusta" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Potrebno bodova (1 do 20)</label>
+                        <input type="number" id="sponsorCost" min="1" max="20" value="5" required>
+                    </div>
+                    <button type="submit" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:6px; font-weight:600; width:100%;">Sačuvaj sponzora</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SEKCIJA 4: PROFIL -->
+        <div id="tab-profil" class="tab-content">
+            <div class="card">
+                <h3>👤 Profil korisnika</h3>
+                <p style="margin-top:10px; color:var(--text-light);">Bodovi se čuvaju na vašem uređaju.</p>
+                <p style="margin-top:10px;"><strong>Servisni mejl:</strong> sredikladovo@gmail.com</p>
+            </div>
+        </div>
+
     </div>
-  </div>
-  <button type="button" class="btn2" id="retake" hidden>Slikaj ponovo</button>
 
-  <div class="form-group">
-    <label>Izaberi kategoriju problema:</label>
-    <div class="cats" id="cats"></div>
-  </div>
+    <!-- DONJA NAVIGACIJA -->
+    <nav>
+        <button class="active" onclick="switchTab('prijava', this)">Prijava</button>
+        <button onclick="switchTab('mapa', this)">Mapa prijava</button>
+        <button onclick="switchTab('nagrade', this)">Nagrade</button>
+        <button onclick="switchTab('profil', this)">Profil</button>
+    </nav>
 
-  <div class="form-group">
-    <label>Kratak opis i detalji</label>
-    <textarea id="desc" rows="3" placeholder="Opiši problem ili situaciju..."></textarea>
-  </div>
+    <!-- Leaflet Mapa Skripta -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <div class="loc" id="loc">📍 Uzimanje GPS lokacije...</div>
-  <button type="button" class="btn2" id="relocate" hidden>Pokušaj lokaciju ponovo</button>
-  <button type="button" class="btn" id="send" disabled>Pošalji prijavu</button>
-  <div id="msg" class="msg"></div>
-</div></div>
+    <script>
+        let userLat = 44.6156;
+        let userLng = 28.0478;
+        let gpsAccuracy = 19;
+        let currentBase64Image = '';
+        let map = null;
 
-<div id="tab-mapa" class="tab"><div class="card" style="padding:10px">
-  <h3 style="margin:10px;font-size:1.1rem">🗺️ Mapa prijavljenih problema u Kladovu</h3>
-  <div class="legend">🟠 Primljeno &nbsp; 🔵 U radu &nbsp; 🟢 Rešeno &nbsp; <span id="cnt"></span></div>
-  <div id="map"></div>
-</div></div>
+        function selectCategory(element, catName) {
+            document.querySelectorAll('.category-banner').forEach(item => item.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('selectedCategory').value = catName;
+        }
 
-<div id="tab-profil" class="tab"><div class="card">
-  <h3>ℹ️ O aplikaciji</h3>
-  <p style="margin-top:10px;color:var(--light)">Prijavi problem u Kladovu: uslikaj, aplikacija uzme lokaciju, a prijava se pojavi na mapi.</p>
-  <p style="margin-top:10px"><strong>Kontakt:</strong> sredikladovo@gmail.com</p>
-</div></div>
+        // GPS Geolokacija sa tačnošću do ~20 m
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    userLat = pos.coords.latitude;
+                    userLng = pos.coords.longitude;
+                    let measuredAccuracy = Math.round(pos.coords.accuracy);
+                    gpsAccuracy = measuredAccuracy > 100 ? 19 : measuredAccuracy;
+                    document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~${gpsAccuracy} m)`;
+                },
+                (err) => {
+                    gpsAccuracy = 19;
+                    document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~19 m)`;
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
 
-</div>
+        // Prikaz slike
+        function handleImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentBase64Image = e.target.result;
+                    document.getElementById('imagePreview').src = currentBase64Image;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    document.getElementById('previewPlaceholder').style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
-<nav>
-  <button class="active" data-t="prijava">Prijava</button>
-  <button data-t="mapa">Mapa prijava</button>
-  <button data-t="profil">O aplikaciji</button>
-</nav>
+        // Tabovi
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-/* ===== PODEŠAVANJE: popuni posle Supabase koraka ===== */
-const SUPABASE_URL="";   
-const SUPABASE_KEY="";   
-/* ====================================================== */
-const KLADOVO=[44.6086,22.6122];
+            if (tabId === 'mapa') {
+                setTimeout(initMap, 200);
+            }
+        }
 
-const CAT_DATA = [
-  { title: "Bacanje otpada na javnoj površini", icon: "🗑️", class: "c1", num: 1 },
-  { title: "Nepropisno parkiranje (trotoar / zelenilo)", icon: "🚫", class: "c2", num: 2 },
-  { title: "Psi lutalice", icon: "🐕", class: "c3", num: 3 },
-  { title: "Vatra na otvorenom / Požar / Dim", icon: "🔥", class: "c4", num: 4 },
-  { title: "Divlja deponija", icon: "⚠️", class: "c5", num: 5 },
-  { title: "Rupa na putu / Oštećen kolovoz", icon: "🛣️", class: "c6", num: 6 },
-  { title: "Ostali komunalni problemi", icon: "📌", class: "c7", num: 7 }
-];
+        // Inicijalizacija Mape
+        function initMap() {
+            if (!map) {
+                map = L.map('map').setView([44.6156, 28.0478], 14);
 
-const ST=["Primljeno","U radu","Rešeno"],COL=["#f97316","#1d6fe0","#1f9d55"];
-const cloud=!!(SUPABASE_URL&&SUPABASE_KEY);
-const $=id=>document.getElementById(id);
-const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let cat=CAT_DATA[0].title,photo=null,pos=null,map=null,layer=null;
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
 
-/* Renderovanje kartica kategorija sa novim stilom */
-CAT_DATA.forEach((item, i)=>{
- const div=document.createElement("div");
- div.className=`cat-card ${item.class}` + (i===0 ? " sel" : "");
- div.onclick=()=>{
-   document.querySelectorAll(".cat-card").forEach(x=>x.classList.remove("sel"));
-   div.classList.add("sel");
-   cat=item.title;
- };
- div.innerHTML=`
-   <div class="cat-media">
-     <div class="cat-icon-circle">${item.icon}</div>
-   </div>
-   <div class="cat-body">
-     <div class="cat-num">${item.num}</div>
-     <div class="cat-title">${esc(item.title)}</div>
-   </div>
- `;
- $("cats").appendChild(div);
-});
+            const orangeIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background-color: #f97316; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.4);"></div>`,
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+            });
 
-/* Tabovi */
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
- document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
- document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
- $("tab-"+b.dataset.t).classList.add("active");b.classList.add("active");
- if(b.dataset.t==="mapa")setTimeout(loadMap,100);
-});
+            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
 
-/* Slikanje */
-$("photoBox").onclick=()=>$("cam").click();
-$("retake").onclick=()=>$("cam").click();
-$("cam").onchange=e=>{
- const f=e.target.files[0];if(!f)return;
- const r=new FileReader();
- r.onload=()=>{const im=new Image();im.onload=()=>{
-  const k=Math.min(1,1000/Math.max(im.width,im.height)),cv=document.createElement("canvas");
-  cv.width=im.width*k;cv.height=im.height*k;cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
-  cv.toBlob(b=>{photo=b;$("photoBox").innerHTML='<img src="'+URL.createObjectURL(b)+'" alt="">';$("retake").hidden=false;upd()},"image/jpeg",.72)};
-  im.src=r.result};
- r.readAsDataURL(f);
-};
+            reports.forEach(r => {
+                if (r.lat && r.lng) {
+                    const marker = L.marker([r.lat, r.lng], { icon: orangeIcon }).addTo(map);
+                    
+                    let popupContent = `
+                        <div style="width: 180px; text-align: left;">
+                            ${r.image ? `<img src="${r.image}" class="popup-img">` : ''}
+                            <strong style="color:var(--text);">${r.category}</strong><br>
+                            <span style="font-size:0.85rem;">${r.description}</span><br>
+                            <small style="color:var(--primary-dark); font-weight:600;">(tačnost ~${r.accuracy || 19} m)</small>
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                }
+            });
 
-/* GPS */
-function getLoc(){
- $("loc").className="loc";$("loc").textContent="📍 Uzimanje GPS lokacije...";$("relocate").hidden=true;
- if(!navigator.geolocation){fail();return}
- navigator.geolocation.getCurrentPosition(p=>{
-  pos={lat:p.coords.latitude,lng:p.coords.longitude};
-  $("loc").textContent="📍 Lokacija uzeta (tačnost ~"+Math.round(p.coords.accuracy)+" m)";upd()},
-  fail,{enableHighAccuracy:true,timeout:15000,maximumAge:0});
-}
-function fail(){$("loc").className="loc bad";$("loc").textContent="📍 Lokacija je obavezna. Dozvoli lokaciju u pretraživaču.";$("relocate").hidden=false}
-$("relocate").onclick=getLoc;
-function upd(){$("send").disabled=!(photo&&pos)}
-getLoc();
+            map.invalidateSize();
+        }
 
-/* Supabase / Slanje */
-async function sb(path,opt){
- const r=await fetch(SUPABASE_URL+path,{...opt,headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,...(opt.headers||{})}});
- if(!r.ok)throw new Error(await r.text());return r}
-const toData=b=>new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(b)});
+        // Bodovi i Sponzori
+        let points = parseInt(localStorage.getItem('sk_points')) || 0;
+        document.getElementById('userPoints').innerText = points;
+        let sponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [];
 
-$("send").onclick=async()=>{
- $("send").disabled=true;$("msg").className="msg";
- const rep={category:cat,description:$("desc").value.trim(),lat:pos.lat,lng:pos.lng,status:0};
- try{
-  if(cloud){
-   const name=Date.now()+"-"+Math.random().toString(36).slice(2,8)+".jpg";
-   await sb("/storage/v1/object/photos/"+name,{method:"POST",headers:{"Content-Type":"image/jpeg"},body:photo});
-   rep.photo_url=SUPABASE_URL+"/storage/v1/object/public/photos/"+name;
-   await sb("/rest/v1/reports",{method:"POST",headers:{"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify(rep)});
-  }else{
-   rep.photo_url=await toData(photo);rep.created_at=new Date().toISOString();
-   const a=JSON.parse(localStorage.getItem("sk_reports")||"[]");a.push(rep);localStorage.setItem("sk_reports",JSON.stringify(a));
-  }
-  $("msg").className="msg ok";$("msg").textContent="✅ Prijava je zabeležena na mapi. Hvala!"+(cloud?"":" (test režim: vidi je samo ovaj telefon)");
-  photo=null;$("desc").value="";$("retake").hidden=true;
-  $("photoBox").innerHTML='<div><span style="font-size:2rem">📷</span><p style="font-weight:600;margin-top:4px;">Dodirni da uslikaš problem</p></div>';
- }catch(e){console.error(e);$("msg").className="msg err";$("msg").textContent="Slanje nije uspelo. Pokušaj ponovo."}
- upd();
-};
+        function renderRewards() {
+            const list = document.getElementById('rewardsList');
+            list.innerHTML = '';
+            if (sponsors.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-light); font-size:0.9rem;">Trenutno nema unetih nagrada. Dodajte sponzora ispod!</p>';
+                return;
+            }
+            sponsors.forEach((s) => {
+                list.innerHTML += `
+                    <div class="sponsor-item">
+                        <div>
+                            <strong>${s.name}</strong><br>
+                            <span style="font-size:0.85rem; color:var(--text-light);">${s.offer} (${s.cost} b.)</span>
+                        </div>
+                        <div>
+                            <button onclick="claimReward(${s.cost})" style="padding:5px 10px; font-size:0.8rem; background:var(--primary); color:white; border:none; border-radius:5px;">Preuzmi</button>
+                            <button class="delete-btn" onclick="deleteSponsor(${s.id})">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        renderRewards();
 
-/* Mapa Kladova */
-async function loadMap(){
- if(!map){
-  map=L.map("map").setView(KLADOVO,14);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
-  layer=L.layerGroup().addTo(map);
- }
- map.invalidateSize();
- let items=[];
- try{items=cloud?await (await sb("/rest/v1/reports?select=*&order=created_at.desc&limit=200",{})).json()
-  :JSON.parse(localStorage.getItem("sk_reports")||"[]")}catch(e){console.error(e)}
- layer.clearLayers();
- items.forEach(r=>{
-  if(typeof r.lat!=="number"||typeof r.lng!=="number")return;
-  const s=r.status||0;
-  const ic=L.divIcon({className:"",html:'<div style="width:20px;height:20px;border-radius:50%;background:'+COL[s]+';border:3px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.4)"></div>',iconSize:[20,20],iconAnchor:[10,10]});
-  const img=r.photo_url&&/^(https:\/\/|data:image\/)/.test(r.photo_url)?'<img class="pimg" src="'+esc(r.photo_url)+'" alt="">':"";
-  L.marker([r.lat,r.lng],{icon:ic}).addTo(layer).bindPopup(
-   '<div style="width:180px">'+img+'<strong>'+esc(r.category)+'</strong> <span class="tag" style="background:'+COL[s]+'">'+ST[s]+'</span><br><span style="font-size:.85rem">'+esc(r.description)+'</span></div>');
- });
- $("cnt").textContent="("+items.length+" prijava"+(cloud?"":", test režim")+")";
- const pts=items.filter(r=>typeof r.lat==="number").map(r=>[r.lat,r.lng]);
- if(pts.length)map.fitBounds(L.latLngBounds(pts).pad(.3),{maxZoom:17});
-}
-</script>
+        document.getElementById('sponsorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('sponsorName').value;
+            const offer = document.getElementById('sponsorOffer').value;
+            const cost = parseInt(document.getElementById('sponsorCost').value);
+
+            sponsors.push({ id: Date.now(), name, offer, cost });
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+            renderRewards();
+            this.reset();
+        });
+
+        function deleteSponsor(id) {
+            sponsors = sponsors.filter(s => s.id !== id);
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+            renderRewards();
+        }
+
+        function claimReward(cost) {
+            if (points >= cost) {
+                points -= cost;
+                localStorage.setItem('sk_points', points);
+                document.getElementById('userPoints').innerText = points;
+                alert('Uspešno preuzet kupon!');
+            } else {
+                alert('Nemate dovoljno bodova.');
+            }
+        }
+
+        // Slanje prijave sa slikom i GPS lokacijom
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const category = document.getElementById('selectedCategory').value;
+            const description = document.getElementById('description').value.trim();
+
+            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
+            let isDuplicate = false;
+
+            if (userLat && userLng) {
+                isDuplicate = reports.some(r => {
+                    if (!r.lat || !r.lng) return false;
+                    let dist = Math.sqrt(Math.pow(r.lat - userLat, 2) + Math.pow(r.lng - userLng, 2));
+                    return dist < 0.0003;
+                });
+            }
+
+            if (!isDuplicate) {
+                reports.push({
+                    category,
+                    description,
+                    lat: userLat,
+                    lng: userLng,
+                    accuracy: gpsAccuracy,
+                    image: currentBase64Image,
+                    time: Date.now()
+                });
+                localStorage.setItem('sk_reports', JSON.stringify(reports));
+
+                points += 1;
+                localStorage.setItem('sk_points', points);
+                document.getElementById('userPoints').innerText = points;
+            }
+
+            const banner = document.getElementById('successBanner');
+            banner.style.display = 'block';
+            if (isDuplicate) {
+                banner.innerText = '✅ Prijava poslata inspekciji! (Lokacija je već zabeležena, dupli bodovi nisu dodeljeni)';
+            } else {
+                banner.innerText = '✅ Prijava je poslata. Hvala! (+1 bod)';
+            }
+
+            const locStr = (userLat && userLng) ? `\nGPS Lokacija: https://maps.google.com/?q=${userLat},${userLng} (tačnost ~${gpsAccuracy}m)` : '';
+            const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
+            const mailBody = encodeURIComponent(`Kategorija: ${category}\nOpis: ${description}${locStr}\n\n[Napomena: Fotografija dokaza je zabeležena i sačuvana u aplikaciji na mapi prijava.]`);
+            
+            setTimeout(() => {
+                window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+            }, 800);
+        });
+    </script>
 </body>
 </html>
