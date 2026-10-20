@@ -6,6 +6,10 @@
     <title>Sredi Kladovo</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
+
+    <!-- Leaflet Mapa CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     <style>
         :root {
             --primary: #10b981;
@@ -27,7 +31,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            padding-bottom: 70px;
+            padding-bottom: 75px;
         }
 
         header {
@@ -39,7 +43,7 @@
         }
 
         header img {
-            max-width: 110px;
+            max-width: 100px;
             height: auto;
             border-radius: 50%;
             margin-bottom: 5px;
@@ -47,7 +51,7 @@
         }
 
         header p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             opacity: 0.95;
         }
 
@@ -72,13 +76,56 @@
 
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
             font-size: 0.9rem;
-            color: var(--text-light);
+            color: var(--text);
         }
 
-        select, input, textarea {
+        /* VIZUELNI IZBOR KATEGORIJA SA SLIKAMA */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .category-card {
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-card img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+
+        .category-card span {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .category-card.selected {
+            border-color: var(--primary);
+            background-color: #ecfdf5;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        input, textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border);
@@ -88,15 +135,10 @@
             background: #fff;
         }
 
-        select:focus, input:focus, textarea:focus {
-            border-color: var(--primary);
-        }
-
-        /* Prikaz uslikane slike */
         .image-preview-container {
             position: relative;
             width: 100%;
-            height: 220px;
+            height: 200px;
             border: 2px dashed var(--border);
             border-radius: 12px;
             display: flex;
@@ -139,11 +181,6 @@
             font-weight: 600;
             width: 100%;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-submit:hover {
-            background-color: #2563eb;
         }
 
         .success-banner {
@@ -156,6 +193,21 @@
             font-weight: 600;
             text-align: center;
             border: 1px solid #a7f3d0;
+        }
+
+        #map {
+            width: 100%;
+            height: 380px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .popup-img {
+            width: 100%;
+            max-height: 140px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 6px;
         }
 
         .points-badge {
@@ -189,7 +241,7 @@
             border: none;
             flex: 1;
             padding: 12px 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
         }
@@ -242,7 +294,7 @@
         <div id="tab-prijava" class="tab-content active">
             <div class="card">
                 <form id="reportForm">
-                    <!-- Slikanje / Prikaz uslikane slike -->
+                    <!-- Slikanje -->
                     <div class="image-preview-container" onclick="document.getElementById('cameraInput').click()">
                         <div id="previewPlaceholder" class="image-preview-placeholder">
                             <span style="font-size: 2rem;">📷</span>
@@ -252,21 +304,46 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" required onchange="handleImage(this)">
 
-                    <!-- Kategorija -->
+                    <!-- VIZUELNI IZBOR KATEGORIJA -->
                     <div class="form-group">
-                        <label>Kategorija</label>
-                        <select id="category" required>
-                            <option value="Divlja deponija">Divlja deponija</option>
-                            <option value="Rupa na putu">Rupa na putu / oštećenje</option>
-                            <option value="Neispravna rasveta">Neispravna javna rasveta</option>
-                            <option value="Prepunjen kontejner">Prepunjeni kontejneri</option>
-                            <option value="Ostalo">Ostali komunalni problemi</option>
-                        </select>
+                        <label>Izaberite kategoriju problema:</label>
+                        <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
+                        
+                        <div class="category-grid">
+                            <div class="category-card selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <img src="https://img.icons8.com/color/96/trash.png" alt="Otpad">
+                                <span>1. Bacanje otpada</span>
+                            </div>
+                            <div class="category-card" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <img src="https://img.icons8.com/color/96/no-parking.png" alt="Parkiranje">
+                                <span>2. Nepropisno parkiranje</span>
+                            </div>
+                            <div class="category-card" onclick="selectCategory(this, 'Psi lutalice')">
+                                <img src="https://img.icons8.com/color/96/dog.png" alt="Psi lutalice">
+                                <span>3. Psi lutalice</span>
+                            </div>
+                            <div class="category-card" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <img src="https://img.icons8.com/color/96/fire.png" alt="Požar">
+                                <span>4. Požar / Dim</span>
+                            </div>
+                            <div class="category-card" onclick="selectCategory(this, 'Divlja deponija')">
+                                <img src="https://img.icons8.com/color/96/garbage-bag.png" alt="Deponija">
+                                <span>5. Divlja deponija</span>
+                            </div>
+                            <div class="category-card" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <img src="https://img.icons8.com/color/96/road-worker.png" alt="Rupa">
+                                <span>6. Rupa na putu</span>
+                            </div>
+                            <div class="category-card" onclick="selectCategory(this, 'Ostalo')">
+                                <img src="https://img.icons8.com/color/96/more.png" alt="Ostalo">
+                                <span>7. Ostalo</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Opis -->
                     <div class="form-group">
-                        <label>Kratak opis</label>
+                        <label>Kratak opis i lokacija</label>
                         <textarea id="description" rows="3" placeholder="Opiši problem..." required></textarea>
                     </div>
 
@@ -275,10 +352,8 @@
                         📍 Uzimanje GPS lokacije...
                     </div>
 
-                    <!-- Dugme za slanje -->
                     <button type="submit" class="btn-submit">Pošalji prijavu</button>
 
-                    <!-- Poruka o uspehu -->
                     <div id="successBanner" class="success-banner">
                         ✅ Prijava je poslata. Hvala!
                     </div>
@@ -286,7 +361,15 @@
             </div>
         </div>
 
-        <!-- SEKCIJA 2: NAGRADE -->
+        <!-- SEKCIJA 2: MAPA PRIJAVA -->
+        <div id="tab-mapa" class="tab-content">
+            <div class="card" style="padding: 10px;">
+                <h3 style="margin: 10px; font-size: 1.1rem;">🗺️ Mapa prijavljenih problema u Kladovu</h3>
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <!-- SEKCIJA 3: NAGRADE -->
         <div id="tab-nagrade" class="tab-content">
             <div class="points-badge">
                 <span>Vaši sakupljeni bodovi:</span>
@@ -318,7 +401,7 @@
             </div>
         </div>
 
-        <!-- SEKCIJA 3: PROFIL -->
+        <!-- SEKCIJA 4: PROFIL -->
         <div id="tab-profil" class="tab-content">
             <div class="card">
                 <h3>👤 Profil korisnika</h3>
@@ -329,25 +412,39 @@
 
     </div>
 
-    <!-- NAVIGACIJA -->
+    <!-- DONJA NAVIGACIJA -->
     <nav>
         <button class="active" onclick="switchTab('prijava', this)">Prijava</button>
+        <button onclick="switchTab('mapa', this)">Mapa prijava</button>
         <button onclick="switchTab('nagrade', this)">Nagrade</button>
         <button onclick="switchTab('profil', this)">Profil</button>
     </nav>
 
-    <script>
-        let userLat = null;
-        let userLng = null;
+    <!-- Leaflet Mapa Skripta -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        // Automatsko uzimanje GPS lokacije čim se otvori stranica
+    <script>
+        let userLat = 44.6156;
+        let userLng = 28.0478;
+        let gpsAccuracy = 19;
+        let currentBase64Image = '';
+        let map = null;
+
+        // Bitan izbor kategorije dodimom kartice
+        function selectCategory(element, catName) {
+            document.querySelectorAll('.category-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('selectedCategory').value = catName;
+        }
+
+        // GPS Geolokacija
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     userLat = pos.coords.latitude;
                     userLng = pos.coords.longitude;
-                    const accuracy = Math.round(pos.coords.accuracy);
-                    document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~${accuracy} m)`;
+                    gpsAccuracy = Math.round(pos.coords.accuracy);
+                    document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~${gpsAccuracy} m)`;
                 },
                 (err) => {
                     document.getElementById('locationStatus').innerHTML = `📍 Unesite ulicu u opisu (GPS onemogućen)`;
@@ -356,12 +453,13 @@
             );
         }
 
-        // Prikaz uslikane fotografije
+        // Prikaz slike
         function handleImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.result;
+                    currentBase64Image = e.target.result;
+                    document.getElementById('imagePreview').src = currentBase64Image;
                     document.getElementById('imagePreview').style.display = 'block';
                     document.getElementById('previewPlaceholder').style.display = 'none';
                 };
@@ -375,12 +473,54 @@
             document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
             btn.classList.add('active');
+
+            if (tabId === 'mapa') {
+                setTimeout(initMap, 200);
+            }
         }
 
-        // Bodovi i sponzori
+        // Inicijalizacija Mape sa narandžastim markerima
+        function initMap() {
+            if (!map) {
+                map = L.map('map').setView([44.6156, 28.0478], 14);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+
+            const orangeIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background-color: #f97316; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.4);"></div>`,
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+            });
+
+            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
+
+            reports.forEach(r => {
+                if (r.lat && r.lng) {
+                    const marker = L.marker([r.lat, r.lng], { icon: orangeIcon }).addTo(map);
+                    
+                    let popupContent = `
+                        <div style="width: 180px; text-align: left;">
+                            ${r.image ? `<img src="${r.image}" class="popup-img">` : ''}
+                            <strong style="color:var(--text);">${r.category}</strong><br>
+                            <span style="font-size:0.85rem;">${r.description}</span><br>
+                            <small style="color:var(--primary-dark); font-weight:600;">(tačnost ~${r.accuracy || 19} m)</small>
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                }
+            });
+
+            map.invalidateSize();
+        }
+
+        // Bodovi i Sponzori
         let points = parseInt(localStorage.getItem('sk_points')) || 0;
         document.getElementById('userPoints').innerText = points;
-
         let sponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [];
 
         function renderRewards() {
@@ -436,10 +576,10 @@
             }
         }
 
-        // Slanje prijave + detekcija duplikata
+        // Slanje prijave
         document.getElementById('reportForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const category = document.getElementById('category').value;
+            const category = document.getElementById('selectedCategory').value;
             const description = document.getElementById('description').value.trim();
 
             let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
@@ -449,12 +589,20 @@
                 isDuplicate = reports.some(r => {
                     if (!r.lat || !r.lng) return false;
                     let dist = Math.sqrt(Math.pow(r.lat - userLat, 2) + Math.pow(r.lng - userLng, 2));
-                    return dist < 0.0003; // ~30m radijus
+                    return dist < 0.0003;
                 });
             }
 
             if (!isDuplicate) {
-                reports.push({ category, description, lat: userLat, lng: userLng, time: Date.now() });
+                reports.push({
+                    category,
+                    description,
+                    lat: userLat,
+                    lng: userLng,
+                    accuracy: gpsAccuracy,
+                    image: currentBase64Image,
+                    time: Date.now()
+                });
                 localStorage.setItem('sk_reports', JSON.stringify(reports));
 
                 points += 1;
@@ -462,7 +610,6 @@
                 document.getElementById('userPoints').innerText = points;
             }
 
-            // Prikaz poruke "Prijava je poslata. Hvala!"
             const banner = document.getElementById('successBanner');
             banner.style.display = 'block';
             if (isDuplicate) {
@@ -471,7 +618,6 @@
                 banner.innerText = '✅ Prijava je poslata. Hvala! (+1 bod)';
             }
 
-            // Slanje na mejl
             const locStr = (userLat && userLng) ? `\nGPS: https://maps.google.com/?q=${userLat},${userLng}` : '';
             const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
             const mailBody = encodeURIComponent(`Kategorija: ${category}\nOpis: ${description}${locStr}`);
