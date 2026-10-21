@@ -272,7 +272,7 @@
         <!-- SEKCIJA 1: PRIJAVA PROBLEMA -->
         <div id="tab-prijava" class="tab-content active">
             <div class="card">
-                <form id="reportForm" enctype="multipart/form-data">
+                <form id="reportForm">
                     <!-- Slikanje -->
                     <div class="image-preview-container" onclick="document.getElementById('cameraInput').click()">
                         <div id="previewPlaceholder" class="image-preview-placeholder">
@@ -551,7 +551,7 @@
             }
         }
 
-        // Slanje prijave sa slikom i GPS lokacijom preko Formspree-a
+        // Slanje prijave sa slikom i GPS lokacijom na mejl
         document.getElementById('reportForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const category = document.getElementById('selectedCategory').value;
@@ -587,44 +587,22 @@
 
             const banner = document.getElementById('successBanner');
             banner.style.display = 'block';
-            banner.innerText = '⏳ Slanje prijave u toku...';
-
-            // Priprema podataka za Formspree
-            const formData = new FormData();
-            formData.append("Kategorija", category);
-            formData.append("Opis", description || "Nema opisa");
-            formData.append("GPS Lokacija", `https://maps.google.com/?q=${userLat},${userLng}`);
-            formData.append("Preciznost GPS-a", `~${gpsAccuracy}m`);
-            
-            const cameraInput = document.getElementById('cameraInput');
-            if (cameraInput.files && cameraInput.files[0]) {
-                formData.append("Slika_Dokaz", cameraInput.files[0]);
+            if (isDuplicate) {
+                banner.innerText = '✅ Prijava poslata inspekciji! (Lokacija je već zabeležena, dupli bodovi nisu dodeljeni)';
+            } else {
+                banner.innerText = '✅ Prijava je poslata. Hvala! (+1 bod)';
             }
 
-            // Povezano sa vašim Formspree nalogom
-            fetch("https://formspree.io/f/meaebzzq", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    banner.innerText = isDuplicate 
-                        ? '✅ Prijava uspešno poslata!' 
-                        : '✅ Prijava uspešno poslata sa slikom! (+1 bod)';
-                    
-                    document.getElementById('description').value = '';
-                    document.getElementById('cameraInput').value = '';
-                    document.getElementById('imagePreview').style.display = 'none';
-                    document.getElementById('previewPlaceholder').style.display = 'block';
-                    currentBase64Image = '';
-                } else {
-                    banner.innerText = '❌ Greška pri slanju. Proverite vezu i pokušajte ponovo.';
-                }
-            }).catch(error => {
-                banner.innerText = '❌ Greška sa mrežom pri slanju.';
-            });
+            const locStr = (userLat && userLng) ? `\nGPS Lokacija: https://maps.google.com/?q=${userLat},${userLng} (tačnost ~${gpsAccuracy}m)` : '';
+            const descStr = description ? `\nOpis: ${description}` : '';
+            const imageInfo = currentBase64Image ? `\n\n[Priložena slika dokaza u bazi aplikacije i na mapi prijava]` : `\n\n[Napomena: Fotografija je zabeležena u aplikaciji]`;
+            
+            const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
+            const mailBody = encodeURIComponent(`Kategorija: ${category}${descStr}${locStr}${imageInfo}`);
+            
+            setTimeout(() => {
+                window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+            }, 800);
         });
     </script>
 </body>
