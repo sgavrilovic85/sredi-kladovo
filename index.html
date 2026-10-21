@@ -277,7 +277,7 @@
                     <div class="image-preview-container" onclick="document.getElementById('cameraInput').click()">
                         <div id="previewPlaceholder" class="image-preview-placeholder">
                             <span style="font-size: 2rem;">📷</span>
-                            <p>Dodirni da uslikaš problem / lice</p>
+                            <p>Dodirni da uslikaš problem</p>
                         </div>
                         <img id="imagePreview" src="" alt="Uslikana slika" style="display: none;">
                     </div>
@@ -290,7 +290,7 @@
                         
                         <div class="category-cards-container">
                             <div class="category-card-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <img src="kat1.jpg%20%E2%80%93%20Bacanje%20otpada.jpg" class="category-banner-img" alt="Bacanje otpada na javnoj površini">
+                                <img src="kat1.jpg" class="category-banner-img" alt="Bacanje otpada na javnoj površini">
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
@@ -298,7 +298,7 @@
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Psi lutalice')">
-                                <img src="kat3.jpg%20%E2%80%93%20Psi%20lutalice.jpg" class="category-banner-img" alt="Psi lutalice">
+                                <img src="kat3.jpg" class="category-banner-img" alt="Psi lutalice">
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
@@ -306,11 +306,11 @@
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Divlja deponija')">
-                                <img src="kat5.jpg%20%E2%80%93%20Divlja%20deponija.jpg" class="category-banner-img" alt="Divlja deponija">
+                                <img src="kat5.jpg" class="category-banner-img" alt="Divlja deponija">
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <img src="kat6.jpg%20%E2%80%93%20Rupa%20na%20putu.jpg" class="category-banner-img" alt="Rupa na putu / Oštećen kolovoz">
+                                <img src="kat6.jpg" class="category-banner-img" alt="Rupa na putu / Oštećen kolovoz">
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Ostalo')">
@@ -402,9 +402,12 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        let userLat = 44.6156;
-        let userLng = 22.6150; // Kladovo
-        let gpsAccuracy = 19;
+        let userLat = null;
+        let userLng = null;
+        const KLADOVO = [44.6086, 22.6122];
+        let currentBlob = null;
+        const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        let gpsAccuracy = null;
         let currentBase64Image = '';
         let map = null;
 
@@ -414,36 +417,52 @@
             document.getElementById('selectedCategory').value = catName;
         }
 
-        // GPS Geolokacija sa visokom preciznošću
-        if (navigator.geolocation) {
+        // GPS lokacija: obavezna, bez izmišljene lokacije i tačnosti
+        function getLoc() {
+            const el = document.getElementById('locationStatus');
+            el.style.color = '';
+            el.innerHTML = '📍 Uzimanje GPS lokacije...';
+            if (!navigator.geolocation) { locFail(); return; }
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     userLat = pos.coords.latitude;
                     userLng = pos.coords.longitude;
-                    let measuredAccuracy = Math.round(pos.coords.accuracy);
-                    gpsAccuracy = measuredAccuracy > 100 ? 19 : measuredAccuracy;
-                    document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~${gpsAccuracy} m)`;
+                    gpsAccuracy = Math.round(pos.coords.accuracy);
+                    el.innerHTML = `📍 Lokacija uzeta (tačnost ~${gpsAccuracy} m)`;
                 },
-                (err) => {
-                    gpsAccuracy = 19;
-                    document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~19 m)`;
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                locFail,
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
         }
+        function locFail() {
+            const el = document.getElementById('locationStatus');
+            el.style.color = '#d93025';
+            el.innerHTML = '📍 Lokacija je obavezna. Dozvoli lokaciju u pretraživaču pa dodirni ovde da pokušaš ponovo.';
+        }
+        document.getElementById('locationStatus').style.cursor = 'pointer';
+        document.getElementById('locationStatus').addEventListener('click', () => { if (userLat === null) getLoc(); });
+        getLoc();
 
         // Prikaz slike
         function handleImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentBase64Image = e.target.result;
+            if (!(input.files && input.files[0])) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const im = new Image();
+                im.onload = function() {
+                    const k = Math.min(1, 1000 / Math.max(im.width, im.height));
+                    const cv = document.createElement('canvas');
+                    cv.width = im.width * k; cv.height = im.height * k;
+                    cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+                    currentBase64Image = cv.toDataURL('image/jpeg', 0.7);
+                    cv.toBlob(b => { currentBlob = b; }, 'image/jpeg', 0.7);
                     document.getElementById('imagePreview').src = currentBase64Image;
                     document.getElementById('imagePreview').style.display = 'block';
                     document.getElementById('previewPlaceholder').style.display = 'none';
                 };
-                reader.readAsDataURL(input.files[0]);
-            }
+                im.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
         }
 
         // Tabovi
@@ -461,14 +480,14 @@
         // Inicijalizacija Mape
         function initMap() {
             if (!map) {
-                map = L.map('map').setView([userLat, userLng], 15);
+                map = L.map('map').setView(KLADOVO, 14);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '© OpenStreetMap'
                 }).addTo(map);
             } else {
-                map.setView([userLat, userLng], 15);
+                map.setView(KLADOVO, 14);
             }
 
             const orangeIcon = L.divIcon({
@@ -486,10 +505,10 @@
                     
                     let popupContent = `
                         <div style="width: 180px; text-align: left;">
-                            ${r.image ? `<img src="${r.image}" class="popup-img">` : ''}
-                            <strong style="color:var(--text);">${r.category}</strong><br>
-                            ${r.description ? `<span style="font-size:0.85rem;">${r.description}</span><br>` : ''}
-                            <small style="color:var(--primary-dark); font-weight:600;">(tačnost ~${r.accuracy || 19} m)</small>
+                            ${r.image && /^data:image\//.test(r.image) ? `<img src="${r.image}" class="popup-img">` : ''}
+                            <strong style="color:var(--text);">${esc(r.category)}</strong><br>
+                            ${r.description ? `<span style="font-size:0.85rem;">${esc(r.description)}</span><br>` : ''}
+                            <small style="color:var(--primary-dark); font-weight:600;">(tačnost ~${r.accuracy || '?'} m)</small>
                         </div>
                     `;
                     marker.bindPopup(popupContent);
@@ -556,6 +575,9 @@
             e.preventDefault();
             const category = document.getElementById('selectedCategory').value;
             const description = document.getElementById('description').value.trim();
+            const bn = document.getElementById('successBanner');
+            if (userLat === null) { bn.style.display = 'block'; bn.innerText = '📍 Prvo dozvoli lokaciju (GPS), pa pošalji.'; getLoc(); return; }
+            if (!currentBlob) { bn.style.display = 'block'; bn.innerText = '📷 Dodaj sliku problema pa pošalji.'; return; }
 
             let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
             let isDuplicate = false;
@@ -578,7 +600,7 @@
                     image: currentBase64Image,
                     time: Date.now()
                 });
-                localStorage.setItem('sk_reports', JSON.stringify(reports));
+                try { localStorage.setItem('sk_reports', JSON.stringify(reports)); } catch (err) { console.warn('Memorija puna', err); }
 
                 points += 1;
                 localStorage.setItem('sk_points', points);
@@ -596,9 +618,8 @@
             formData.append("GPS Lokacija", `https://maps.google.com/?q=${userLat},${userLng}`);
             formData.append("Preciznost GPS-a", `~${gpsAccuracy}m`);
             
-            const cameraInput = document.getElementById('cameraInput');
-            if (cameraInput.files && cameraInput.files[0]) {
-                formData.append("Slika_Dokaz", cameraInput.files[0]);
+            if (currentBlob) {
+                formData.append("Slika_Dokaz", currentBlob, "prijava.jpg");
             }
 
             // Povezano sa vašim Formspree nalogom
@@ -618,7 +639,7 @@
                     document.getElementById('cameraInput').value = '';
                     document.getElementById('imagePreview').style.display = 'none';
                     document.getElementById('previewPlaceholder').style.display = 'block';
-                    currentBase64Image = '';
+                    currentBase64Image = ''; currentBlob = null;
                 } else {
                     banner.innerText = '❌ Greška pri slanju. Proverite vezu i pokušajte ponovo.';
                 }
