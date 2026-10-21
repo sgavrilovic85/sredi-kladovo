@@ -82,7 +82,7 @@
             color: var(--text);
         }
 
-        /* ČIST I STABILAN DIZAJN: SLIKA LEVO, KRUŽIĆ SA BROJEM, PA TEKST DESNO BEZ PREKLAPANJA */
+        /* UREDAN I STABILAN PRIKAZ SA VAŠIM ORIGINALNIM NAZIVIMA FAJLOVA */
         .category-cards-container {
             display: flex;
             flex-direction: column;
@@ -322,7 +322,7 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA SA VAŠIM LOKALNIM SLIKAMA -->
+                    <!-- 7 KATEGORIJA SA ORIGINALNIM NAZIVIMA FAJLOVA -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
@@ -340,7 +340,7 @@
                                 <img src="kat2.jpg – Nepropisno parkiranje....jpg" class="category-thumb" alt="Parkiranje">
                                 <div class="category-badge-num">2</div>
                                 <div class="category-info">
-                                    <div class="category-title">Nepropisno parkiranje na trotoaru ili zelenoj površini</div>
+                                    <div class="category-title">Nepropisno parkiranje (trotoar / zelenilo)</div>
                                 </div>
                             </div>
 
@@ -361,7 +361,7 @@
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Divlja deponija')">
-                                <img src="kat5.jpg –Divlja deponija.jpg" class="category-thumb" alt="Deponija">
+                                <img src="kat5.jpg – Divlja deponija.jpg" class="category-thumb" alt="Deponija">
                                 <div class="category-badge-num">5</div>
                                 <div class="category-info">
                                     <div class="category-title">Divlja deponija</div>
