@@ -309,16 +309,6 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .delete-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -344,7 +334,7 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA SA SLIKAMA I BROJEVIMA -->
+                    <!-- 7 KATEGORIJA SA SLIKAMA U POZADINI -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
@@ -360,7 +350,7 @@
                             <div class="category-banner bg-2" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
                                 <div class="banner-content">
                                     <div class="banner-number">2</div>
-                                    <div class="banner-text">Nepropisno parkiranje (trotoar / zelenilo)</div>
+                                    <div class="banner-text">Nepropisno parkiranje na trotoaru ili zelenoj površini</div>
                                 </div>
                             </div>
 
@@ -429,7 +419,7 @@
             </div>
         </div>
 
-        <!-- SEKCIJA 3: NAGRADE (SAMO ZA KORISNIKE) -->
+        <!-- SEKCIJA 3: NAGRADE (SAMO PREUZIMANJE) -->
         <div id="tab-nagrade" class="tab-content">
             <div class="points-badge">
                 <span>Vaši sakupljeni bodovi:</span>
