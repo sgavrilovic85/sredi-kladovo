@@ -82,82 +82,35 @@
             color: var(--text);
         }
 
-        /* VAŠE DIREKTNE SLIKE SA GITHUB-A */
-        .category-cards-container {
+        /* PRIKAZ VAŠIH GOTOVIH SLIKA BANERA SA GITHUB-A */
+        .category-banners-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-bottom: 15px;
         }
 
-        .category-card-item {
-            background: #ffffff;
-            border: 2px solid var(--border);
+        .category-banner-card {
+            border: 3px solid transparent;
             border-radius: 14px;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            overflow: hidden;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            background: #fff;
         }
 
-        .category-card-item:hover {
-            border-color: #cbd5e1;
+        .category-banner-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
         }
 
-        .category-thumb {
-            width: 70px;
-            height: 55px;
-            border-radius: 8px;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-            background: #f1f5f9;
-        }
-
-        .category-badge-num {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1rem;
-            flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .category-info {
-            flex-grow: 1;
-        }
-
-        .category-title {
-            font-size: 0.92rem;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1.25;
-            margin-bottom: 2px;
-        }
-
-        .category-desc {
-            font-size: 0.76rem;
-            color: var(--text-light);
-            line-height: 1.2;
-        }
-
-        .category-card-item.selected {
+        .category-banner-card.selected {
             border-color: var(--primary);
-            background-color: #ecfdf5;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-        }
-
-        .category-card-item.selected .category-badge-num {
-            background: var(--primary-dark);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+            transform: scale(1.01);
         }
 
         input, textarea {
@@ -339,73 +292,38 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
 
-                    <!-- TAČNA IMENA SLIKA SA VAŠEG GITHUB REPOZITORIJUMA -->
+                    <!-- PRIKAZ VAŠIH 7 BANERA SA GITHUB-A -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
-                        <div class="category-cards-container">
-                            <div class="category-card-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <img src="kat1.jpg – Bacanje otpada.jpg" class="category-thumb" alt="Otpad">
-                                <div class="category-badge-num">1</div>
-                                <div class="category-info">
-                                    <div class="category-title">Bacanje otpada na javnoj površini</div>
-                                    <div class="category-desc">Pravilno odlaganje čuva našu okolinu.</div>
-                                </div>
+                        <div class="category-banners-container">
+                            <div class="category-banner-card selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <img src="kat1.jpg – Bacanje otpada.jpg" alt="1. Bacanje otpada" onerror="this.src='kat1.jpg'">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <img src="kat2.jpg – Nepropisno parkiranje....jpg" class="category-thumb" alt="Parkiranje">
-                                <div class="category-badge-num">2</div>
-                                <div class="category-info">
-                                    <div class="category-title">Nepropisno parkiranje (trotoar / zelenilo)</div>
-                                    <div class="category-desc">Ostavimo prostor za pešake i zelene površine.</div>
-                                </div>
+                            <div class="category-banner-card" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <img src="kat2.jpg – Nepropisno parkiranje.jpg" alt="2. Nepropisno parkiranje" onerror="this.src='kat2.jpg'">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Psi lutalice')">
-                                <img src="kat3.jpg – Psi lutalice.jpg" class="category-thumb" alt="Psi">
-                                <div class="category-badge-num">3</div>
-                                <div class="category-info">
-                                    <div class="category-title">Psi lutalice</div>
-                                    <div class="category-desc">Briga o životinjama je briga o bezbednosti.</div>
-                                </div>
+                            <div class="category-banner-card" onclick="selectCategory(this, 'Psi lutalice')">
+                                <img src="kat3.jpg – Psi lutalice.jpg" alt="3. Psi lutalice" onerror="this.src='kat3.jpg'">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
-                                <img src="kat4.jpg" class="category-thumb" alt="Požar">
-                                <div class="category-badge-num">4</div>
-                                <div class="category-info">
-                                    <div class="category-title">Vatra na otvorenom - požar - dim</div>
-                                    <div class="category-desc">Brza reakcija sprečava štetu.</div>
-                                </div>
+                            <div class="category-banner-card" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <img src="kat4.jpg" alt="4. Vatra na otvorenom / Požar / Dim">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Divlja deponija')">
-                                <img src="kat5.jpg – Divlja deponija.jpg" class="category-thumb" alt="Deponija">
-                                <div class="category-badge-num">5</div>
-                                <div class="category-info">
-                                    <div class="category-title">Divlja deponija</div>
-                                    <div class="category-desc">Prijavite nelegalno odlaganje otpada.</div>
-                                </div>
+                            <div class="category-banner-card" onclick="selectCategory(this, 'Divlja deponija')">
+                                <img src="kat5.jpg – Divlja deponija.jpg" alt="5. Divlja deponija" onerror="this.src='kat5.jpg'">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <img src="kat6.jpg – Rupa na putu.jpg" class="category-thumb" alt="Put">
-                                <div class="category-badge-num">6</div>
-                                <div class="category-info">
-                                    <div class="category-title">Rupa na putu - oštećen kolovoz</div>
-                                    <div class="category-desc">Obezbedimo sigurnije saobraćajnice.</div>
-                                </div>
+                            <div class="category-banner-card" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <img src="kat6.jpg – Rupa na putu.jpg" alt="6. Rupa na putu" onerror="this.src='kat6.jpg'">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Ostalo')">
-                                <img src="kat7.jpg" class="category-thumb" alt="Ostalo">
-                                <div class="category-badge-num">7</div>
-                                <div class="category-info">
-                                    <div class="category-title">Ostalo</div>
-                                    <div class="category-desc">Ostali komunalni problemi.</div>
-                                </div>
+                            <div class="category-banner-card" onclick="selectCategory(this, 'Ostalo')">
+                                <img src="kat7.jpg" alt="7. Ostalo">
                             </div>
                         </div>
                     </div>
@@ -500,7 +418,7 @@
         let map = null;
 
         function selectCategory(element, catName) {
-            document.querySelectorAll('.category-card-item').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.category-banner-card').forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selectedCategory').value = catName;
         }
@@ -555,4 +473,150 @@
                 map = L.map('map').setView([userLat, userLng], 15);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom:
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            } else {
+                map.setView([userLat, userLng], 15);
+            }
+
+            const orangeIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background-color: #f97316; width: 22px; height: 22px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
+
+            reports.forEach(r => {
+                if (r.lat && r.lng) {
+                    const marker = L.marker([r.lat, r.lng], { icon: orangeIcon }).addTo(map);
+                    
+                    let popupContent = `
+                        <div style="width: 180px; text-align: left;">
+                            ${r.image ? `<img src="${r.image}" class="popup-img">` : ''}
+                            <strong style="color:var(--text);">${r.category}</strong><br>
+                            ${r.description ? `<span style="font-size:0.85rem;">${r.description}</span><br>` : ''}
+                            <small style="color:var(--primary-dark); font-weight:600;">(tačnost ~${r.accuracy || 19} m)</small>
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                }
+            });
+
+            map.invalidateSize();
+        }
+
+        // Bodovi i Sponzori
+        let points = parseInt(localStorage.getItem('sk_points')) || 0;
+        document.getElementById('userPoints').innerText = points;
+        let sponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [];
+
+        function renderRewards() {
+            const list = document.getElementById('rewardsList');
+            list.innerHTML = '';
+            if (sponsors.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-light); font-size:0.9rem;">Trenutno nema unetih nagrada. Dodajte sponzora ispod!</p>';
+                return;
+            }
+            sponsors.forEach((s) => {
+                list.innerHTML += `
+                    <div class="sponsor-item">
+                        <div>
+                            <strong>${s.name}</strong><br>
+                            <span style="font-size:0.85rem; color:var(--text-light);">${s.offer} (${s.cost} b.)</span>
+                        </div>
+                        <div>
+                            <button onclick="claimReward(${s.cost})" style="padding:5px 10px; font-size:0.8rem; background:var(--primary); color:white; border:none; border-radius:5px;">Preuzmi</button>
+                            <button class="delete-btn" onclick="deleteSponsor(${s.id})">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        renderRewards();
+
+        document.getElementById('sponsorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('sponsorName').value;
+            const offer = document.getElementById('sponsorOffer').value;
+            const cost = parseInt(document.getElementById('sponsorCost').value);
+
+            sponsors.push({ id: Date.now(), name, offer, cost });
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+            renderRewards();
+            this.reset();
+        });
+
+        function deleteSponsor(id) {
+            sponsors = sponsors.filter(s => s.id !== id);
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+            renderRewards();
+        }
+
+        function claimReward(cost) {
+            if (points >= cost) {
+                points -= cost;
+                localStorage.setItem('sk_points', points);
+                document.getElementById('userPoints').innerText = points;
+                alert('Uspešno preuzet kupon!');
+            } else {
+                alert('Nemate dovoljno bodova.');
+            }
+        }
+
+        // Slanje prijave sa slikom i GPS lokacijom na mejl
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const category = document.getElementById('selectedCategory').value;
+            const description = document.getElementById('description').value.trim();
+
+            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
+            let isDuplicate = false;
+
+            if (userLat && userLng) {
+                isDuplicate = reports.some(r => {
+                    if (!r.lat || !r.lng) return false;
+                    let dist = Math.sqrt(Math.pow(r.lat - userLat, 2) + Math.pow(r.lng - userLng, 2));
+                    return dist < 0.0003;
+                });
+            }
+
+            if (!isDuplicate) {
+                reports.push({
+                    category,
+                    description,
+                    lat: userLat,
+                    lng: userLng,
+                    accuracy: gpsAccuracy,
+                    image: currentBase64Image,
+                    time: Date.now()
+                });
+                localStorage.setItem('sk_reports', JSON.stringify(reports));
+
+                points += 1;
+                localStorage.setItem('sk_points', points);
+                document.getElementById('userPoints').innerText = points;
+            }
+
+            const banner = document.getElementById('successBanner');
+            banner.style.display = 'block';
+            if (isDuplicate) {
+                banner.innerText = '✅ Prijava poslata inspekciji! (Lokacija je već zabeležena, dupli bodovi nisu dodeljeni)';
+            } else {
+                banner.innerText = '✅ Prijava je poslata. Hvala! (+1 bod)';
+            }
+
+            const locStr = (userLat && userLng) ? `\nGPS Lokacija: https://maps.google.com/?q=${userLat},${userLng} (tačnost ~${gpsAccuracy}m)` : '';
+            const descStr = description ? `\nOpis: ${description}` : '';
+            const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
+            const mailBody = encodeURIComponent(`Kategorija: ${category}${descStr}${locStr}\n\n[Napomena: Fotografija dokaza je zabeležena i sačuvana u aplikaciji na mapi prijava.]`);
+            
+            setTimeout(() => {
+                window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+            }, 800);
+        });
+    </script>
+</body>
+</html>
