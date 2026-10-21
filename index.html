@@ -82,7 +82,6 @@
             color: var(--text);
         }
 
-        /* PRIKAZ VAŠIH GOTOVIH BANER SLIKA PREKO CELE KARTICE */
         .category-cards-container {
             display: flex;
             flex-direction: column;
@@ -284,7 +283,7 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
 
-                    <!-- 7 GOTOVIH BANERA BEZ DUPLIRANOG TEKSTA I BROJEVA -->
+                    <!-- KATEGORIJE -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
@@ -320,7 +319,7 @@
                         </div>
                     </div>
 
-                    <!-- Opis (OPCIONALNO) -->
+                    <!-- Opis -->
                     <div class="form-group">
                         <label>Kratak opis i detalji <span style="color: var(--text-light); font-weight: normal;">(opcionalno)</span></label>
                         <textarea id="description" rows="3" placeholder="Opiši problem ili situaciju..."></textarea>
@@ -361,7 +360,7 @@
             </div>
         </div>
 
-        <!-- SEKCIJA 4: PROFIL I ADMIN PANEL ZA SPONZORE -->
+        <!-- SEKCIJA 4: PROFIL I ADMIN PANEL -->
         <div id="tab-profil" class="tab-content">
             <div class="card">
                 <h3>👤 Profil korisnika</h3>
@@ -415,7 +414,7 @@
             document.getElementById('selectedCategory').value = catName;
         }
 
-        // GPS Geolokacija sa tačnošću do ~20 m
+        // GPS Geolokacija sa visokom preciznošću
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
@@ -596,8 +595,10 @@
 
             const locStr = (userLat && userLng) ? `\nGPS Lokacija: https://maps.google.com/?q=${userLat},${userLng} (tačnost ~${gpsAccuracy}m)` : '';
             const descStr = description ? `\nOpis: ${description}` : '';
+            const imageInfo = currentBase64Image ? `\n\n[Priložena slika dokaza u bazi aplikacije i na mapi prijava]` : `\n\n[Napomena: Fotografija je zabeležena u aplikaciji]`;
+            
             const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
-            const mailBody = encodeURIComponent(`Kategorija: ${category}${descStr}${locStr}\n\n[Napomena: Fotografija dokaza je zabeležena i sačuvana u aplikaciji na mapi prijava.]`);
+            const mailBody = encodeURIComponent(`Kategorija: ${category}${descStr}${locStr}${imageInfo}`);
             
             setTimeout(() => {
                 window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
