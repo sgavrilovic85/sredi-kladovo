@@ -82,93 +82,82 @@
             color: var(--text);
         }
 
-        /* STABILNI BANERI SA VAŠIM SLIKAMA I BROJEVIMA */
-        .category-banners {
+        /* VAŠE DIREKTNE SLIKE SA GITHUB-A */
+        .category-cards-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-bottom: 15px;
         }
 
-        .category-banner {
-            position: relative;
-            height: 90px;
-            border-radius: 14px;
-            overflow: hidden;
+        .category-card-item {
+            background: #ffffff;
             border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            display: flex;
-            align-items: center;
-            background-size: cover;
-            background-position: center;
-            background-color: #e2e8f0;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
-        .category-banner::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 65%, rgba(255,255,255,0.65) 100%);
-            z-index: 1;
+        .category-card-item:hover {
+            border-color: #cbd5e1;
         }
 
-        /* Provereni stabilni direktni linkovi vaših kategorija */
-        .category-banner.bg-1 { background-image: url('https://images.unsplash.com/photo-1532996122724-e3c359a0b15b?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-2 { background-image: url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-3 { background-image: url('https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-4 { background-image: url('https://images.unsplash.com/photo-1508873696983-2df5c920aac9?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-5 { background-image: url('https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-6 { background-image: url('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-7 { background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80'); }
-
-        .banner-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 0 16px;
-            gap: 15px;
+        .category-thumb {
+            width: 70px;
+            height: 55px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            background: #f1f5f9;
         }
 
-        .banner-number {
-            width: 42px;
-            height: 42px;
+        .category-badge-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             background: var(--primary);
             color: white;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
             font-weight: bold;
+            font-size: 1rem;
             flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .banner-text-container {
-            display: flex;
-            flex-direction: column;
+        .category-info {
+            flex-grow: 1;
         }
 
-        .banner-text {
-            color: #0f172a;
-            font-size: 0.95rem;
+        .category-title {
+            font-size: 0.92rem;
             font-weight: 700;
-            line-height: 1.3;
+            color: var(--text);
+            line-height: 1.25;
+            margin-bottom: 2px;
         }
 
-        .category-banner.selected {
+        .category-desc {
+            font-size: 0.76rem;
+            color: var(--text-light);
+            line-height: 1.2;
+        }
+
+        .category-card-item.selected {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
-            transform: scale(1.01);
+            background-color: #ecfdf5;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
         }
 
-        .category-banner.selected .banner-number {
+        .category-card-item.selected .category-badge-num {
             background: var(--primary-dark);
-            color: white;
         }
 
         input, textarea {
@@ -350,58 +339,72 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA SA SLIKAMA I BROJEVIMA -->
+                    <!-- TAČNA IMENA SLIKA SA VAŠEG GITHUB REPOZITORIJUMA -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
-                        <div class="category-banners">
-                            <div class="category-banner bg-1 selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <div class="banner-content">
-                                    <div class="banner-number">1</div>
-                                    <div class="banner-text">Bacanje otpada na javnoj površini</div>
+                        <div class="category-cards-container">
+                            <div class="category-card-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <img src="kat1.jpg – Bacanje otpada.jpg" class="category-thumb" alt="Otpad">
+                                <div class="category-badge-num">1</div>
+                                <div class="category-info">
+                                    <div class="category-title">Bacanje otpada na javnoj površini</div>
+                                    <div class="category-desc">Pravilno odlaganje čuva našu okolinu.</div>
                                 </div>
                             </div>
 
-                            <div class="category-banner bg-2" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <div class="banner-content">
-                                    <div class="banner-number">2</div>
-                                    <div class="banner-text">Nepropisno parkiranje (trotoar / zelenilo)</div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <img src="kat2.jpg – Nepropisno parkiranje....jpg" class="category-thumb" alt="Parkiranje">
+                                <div class="category-badge-num">2</div>
+                                <div class="category-info">
+                                    <div class="category-title">Nepropisno parkiranje (trotoar / zelenilo)</div>
+                                    <div class="category-desc">Ostavimo prostor za pešake i zelene površine.</div>
                                 </div>
                             </div>
 
-                            <div class="category-banner bg-3" onclick="selectCategory(this, 'Psi lutalice')">
-                                <div class="banner-content">
-                                    <div class="banner-number">3</div>
-                                    <div class="banner-text">Psi lutalice</div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Psi lutalice')">
+                                <img src="kat3.jpg – Psi lutalice.jpg" class="category-thumb" alt="Psi">
+                                <div class="category-badge-num">3</div>
+                                <div class="category-info">
+                                    <div class="category-title">Psi lutalice</div>
+                                    <div class="category-desc">Briga o životinjama je briga o bezbednosti.</div>
                                 </div>
                             </div>
 
-                            <div class="category-banner bg-4" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
-                                <div class="banner-content">
-                                    <div class="banner-number">4</div>
-                                    <div class="banner-text">Vatra na otvorenom - požar - dim</div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <img src="kat4.jpg" class="category-thumb" alt="Požar">
+                                <div class="category-badge-num">4</div>
+                                <div class="category-info">
+                                    <div class="category-title">Vatra na otvorenom - požar - dim</div>
+                                    <div class="category-desc">Brza reakcija sprečava štetu.</div>
                                 </div>
                             </div>
 
-                            <div class="category-banner bg-5" onclick="selectCategory(this, 'Divlja deponija')">
-                                <div class="banner-content">
-                                    <div class="banner-number">5</div>
-                                    <div class="banner-text">Divlja deponija</div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Divlja deponija')">
+                                <img src="kat5.jpg – Divlja deponija.jpg" class="category-thumb" alt="Deponija">
+                                <div class="category-badge-num">5</div>
+                                <div class="category-info">
+                                    <div class="category-title">Divlja deponija</div>
+                                    <div class="category-desc">Prijavite nelegalno odlaganje otpada.</div>
                                 </div>
                             </div>
 
-                            <div class="category-banner bg-6" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <div class="banner-content">
-                                    <div class="banner-number">6</div>
-                                    <div class="banner-text">Rupa na putu - oštećen kolovoz</div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <img src="kat6.jpg – Rupa na putu.jpg" class="category-thumb" alt="Put">
+                                <div class="category-badge-num">6</div>
+                                <div class="category-info">
+                                    <div class="category-title">Rupa na putu - oštećen kolovoz</div>
+                                    <div class="category-desc">Obezbedimo sigurnije saobraćajnice.</div>
                                 </div>
                             </div>
 
-                            <div class="category-banner bg-7" onclick="selectCategory(this, 'Ostalo')">
-                                <div class="banner-content">
-                                    <div class="banner-number">7</div>
-                                    <div class="banner-text">Ostalo</div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Ostalo')">
+                                <img src="kat7.jpg" class="category-thumb" alt="Ostalo">
+                                <div class="category-badge-num">7</div>
+                                <div class="category-info">
+                                    <div class="category-title">Ostalo</div>
+                                    <div class="category-desc">Ostali komunalni problemi.</div>
                                 </div>
                             </div>
                         </div>
@@ -497,7 +500,7 @@
         let map = null;
 
         function selectCategory(element, catName) {
-            document.querySelectorAll('.category-banner').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.category-card-item').forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selectedCategory').value = catName;
         }
@@ -552,150 +555,4 @@
                 map = L.map('map').setView([userLat, userLng], 15);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-            } else {
-                map.setView([userLat, userLng], 15);
-            }
-
-            const orangeIcon = L.divIcon({
-                className: 'custom-div-icon',
-                html: `<div style="background-color: #f97316; width: 22px; height: 22px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></div>`,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12]
-            });
-
-            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
-
-            reports.forEach(r => {
-                if (r.lat && r.lng) {
-                    const marker = L.marker([r.lat, r.lng], { icon: orangeIcon }).addTo(map);
-                    
-                    let popupContent = `
-                        <div style="width: 180px; text-align: left;">
-                            ${r.image ? `<img src="${r.image}" class="popup-img">` : ''}
-                            <strong style="color:var(--text);">${r.category}</strong><br>
-                            ${r.description ? `<span style="font-size:0.85rem;">${r.description}</span><br>` : ''}
-                            <small style="color:var(--primary-dark); font-weight:600;">(tačnost ~${r.accuracy || 19} m)</small>
-                        </div>
-                    `;
-                    marker.bindPopup(popupContent);
-                }
-            });
-
-            map.invalidateSize();
-        }
-
-        // Bodovi i Sponzori
-        let points = parseInt(localStorage.getItem('sk_points')) || 0;
-        document.getElementById('userPoints').innerText = points;
-        let sponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [];
-
-        function renderRewards() {
-            const list = document.getElementById('rewardsList');
-            list.innerHTML = '';
-            if (sponsors.length === 0) {
-                list.innerHTML = '<p style="color:var(--text-light); font-size:0.9rem;">Trenutno nema unetih nagrada. Dodajte sponzora ispod!</p>';
-                return;
-            }
-            sponsors.forEach((s) => {
-                list.innerHTML += `
-                    <div class="sponsor-item">
-                        <div>
-                            <strong>${s.name}</strong><br>
-                            <span style="font-size:0.85rem; color:var(--text-light);">${s.offer} (${s.cost} b.)</span>
-                        </div>
-                        <div>
-                            <button onclick="claimReward(${s.cost})" style="padding:5px 10px; font-size:0.8rem; background:var(--primary); color:white; border:none; border-radius:5px;">Preuzmi</button>
-                            <button class="delete-btn" onclick="deleteSponsor(${s.id})">✕</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-        renderRewards();
-
-        document.getElementById('sponsorForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('sponsorName').value;
-            const offer = document.getElementById('sponsorOffer').value;
-            const cost = parseInt(document.getElementById('sponsorCost').value);
-
-            sponsors.push({ id: Date.now(), name, offer, cost });
-            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
-            renderRewards();
-            this.reset();
-        });
-
-        function deleteSponsor(id) {
-            sponsors = sponsors.filter(s => s.id !== id);
-            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
-            renderRewards();
-        }
-
-        function claimReward(cost) {
-            if (points >= cost) {
-                points -= cost;
-                localStorage.setItem('sk_points', points);
-                document.getElementById('userPoints').innerText = points;
-                alert('Uspešno preuzet kupon!');
-            } else {
-                alert('Nemate dovoljno bodova.');
-            }
-        }
-
-        // Slanje prijave sa slikom i GPS lokacijom na mejl
-        document.getElementById('reportForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const category = document.getElementById('selectedCategory').value;
-            const description = document.getElementById('description').value.trim();
-
-            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
-            let isDuplicate = false;
-
-            if (userLat && userLng) {
-                isDuplicate = reports.some(r => {
-                    if (!r.lat || !r.lng) return false;
-                    let dist = Math.sqrt(Math.pow(r.lat - userLat, 2) + Math.pow(r.lng - userLng, 2));
-                    return dist < 0.0003;
-                });
-            }
-
-            if (!isDuplicate) {
-                reports.push({
-                    category,
-                    description,
-                    lat: userLat,
-                    lng: userLng,
-                    accuracy: gpsAccuracy,
-                    image: currentBase64Image,
-                    time: Date.now()
-                });
-                localStorage.setItem('sk_reports', JSON.stringify(reports));
-
-                points += 1;
-                localStorage.setItem('sk_points', points);
-                document.getElementById('userPoints').innerText = points;
-            }
-
-            const banner = document.getElementById('successBanner');
-            banner.style.display = 'block';
-            if (isDuplicate) {
-                banner.innerText = '✅ Prijava poslata inspekciji! (Lokacija je već zabeležena, dupli bodovi nisu dodeljeni)';
-            } else {
-                banner.innerText = '✅ Prijava je poslata. Hvala! (+1 bod)';
-            }
-
-            const locStr = (userLat && userLng) ? `\nGPS Lokacija: https://maps.google.com/?q=${userLat},${userLng} (tačnost ~${gpsAccuracy}m)` : '';
-            const descStr = description ? `\nOpis: ${description}` : '';
-            const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
-            const mailBody = encodeURIComponent(`Kategorija: ${category}${descStr}${locStr}\n\n[Napomena: Fotografija dokaza je zabeležena i sačuvana u aplikaciji na mapi prijava.]`);
-            
-            setTimeout(() => {
-                window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-            }, 800);
-        });
-    </script>
-</body>
-</html>
+                    maxZoom:
