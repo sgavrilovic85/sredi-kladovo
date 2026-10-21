@@ -82,7 +82,6 @@
             color: var(--text);
         }
 
-        /* UREDAN I STABILAN PRIKAZ SA VAŠIM ORIGINALNIM NAZIVIMA FAJLOVA */
         .category-cards-container {
             display: flex;
             flex-direction: column;
@@ -322,14 +321,14 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA SA ORIGINALNIM NAZIVIMA FAJLOVA -->
+                    <!-- 7 KATEGORIJA SA KODIRANIM LINKOVIMA KOJI STOPRUDO RADE -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
                         <div class="category-cards-container">
                             <div class="category-card-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <img src="kat1.jpg – Bacanje otpada.jpg" class="category-thumb" alt="Otpad">
+                                <img src="kat1.jpg%20%E2%80%93%20Bacanje%20otpada.jpg" class="category-thumb" alt="Otpad">
                                 <div class="category-badge-num">1</div>
                                 <div class="category-info">
                                     <div class="category-title">Bacanje otpada na javnoj površini</div>
@@ -337,15 +336,15 @@
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <img src="kat2.jpg – Nepropisno parkiranje....jpg" class="category-thumb" alt="Parkiranje">
+                                <img src="kat2.jpg%20%E2%80%93%20Nepropisno%20parkiranje....jpg" class="category-thumb" alt="Parkiranje">
                                 <div class="category-badge-num">2</div>
                                 <div class="category-info">
-                                    <div class="category-title">Nepropisno parkiranje (trotoar / zelenilo)</div>
+                                    <div class="category-title">Nepropisno parkiranje na trotoaru ili zelenoj površini</div>
                                 </div>
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Psi lutalice')">
-                                <img src="kat3.jpg – Psi lutalice.jpg" class="category-thumb" alt="Psi">
+                                <img src="kat3.jpg%20%E2%80%93%20Psi%20lutalice.jpg" class="category-thumb" alt="Psi">
                                 <div class="category-badge-num">3</div>
                                 <div class="category-info">
                                     <div class="category-title">Psi lutalice</div>
@@ -361,7 +360,7 @@
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Divlja deponija')">
-                                <img src="kat5.jpg – Divlja deponija.jpg" class="category-thumb" alt="Deponija">
+                                <img src="kat5.jpg%20%E2%80%93%20Divlja%20deponija.jpg" class="category-thumb" alt="Deponija">
                                 <div class="category-badge-num">5</div>
                                 <div class="category-info">
                                     <div class="category-title">Divlja deponija</div>
@@ -369,7 +368,7 @@
                             </div>
 
                             <div class="category-card-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <img src="kat6.jpg – Rupa na putu.jpg" class="category-thumb" alt="Put">
+                                <img src="kat6.jpg%20%E2%80%93%20Rupa%20na%20putu.jpg" class="category-thumb" alt="Put">
                                 <div class="category-badge-num">6</div>
                                 <div class="category-info">
                                     <div class="category-title">Rupa na putu - oštećen kolovoz</div>
