@@ -82,38 +82,37 @@
             color: var(--text);
         }
 
-        /* POVEĆANE KARTICE KATEGORIJA */
+        /* KARTICE KATEGORIJA - PRIKAZ CELE SLIKE */
         .category-cards-container {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 10px;
             margin-bottom: 15px;
         }
 
         .category-card-item {
             background: #ffffff;
             border: 2px solid var(--border);
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 0;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             display: flex;
         }
 
         .category-banner-img {
             width: 100%;
             height: auto;
-            min-height: 85px; /* Povećana visina slika kategorija */
             display: block;
-            object-fit: cover;
+            object-fit: contain; /* Prikazuje celu sliku bez sečenja */
         }
 
         .category-card-item.selected {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.35);
-            transform: scale(1.02);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
+            transform: scale(1.01);
         }
 
         input, textarea {
@@ -130,7 +129,7 @@
         .image-preview-container {
             position: relative;
             width: 100%;
-            height: 110px; /* Smanjeno sa 200px na 110px */
+            height: 100px;
             border: 2px dashed var(--border);
             border-radius: 12px;
             display: flex;
@@ -154,7 +153,7 @@
         }
 
         .image-preview-placeholder p {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 600;
         }
 
@@ -284,7 +283,7 @@
                     <!-- Slikanje -->
                     <div class="image-preview-container" onclick="document.getElementById('cameraInput').click()">
                         <div id="previewPlaceholder" class="image-preview-placeholder">
-                            <span style="font-size: 1.5rem;">📷</span>
+                            <span style="font-size: 1.4rem;">📷</span>
                             <p>Dodirni da uslikaš problem / lice</p>
                         </div>
                         <img id="imagePreview" src="" alt="Uslikana slika" style="display: none;">
