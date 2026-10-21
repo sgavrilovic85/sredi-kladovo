@@ -82,82 +82,38 @@
             color: var(--text);
         }
 
-        /* UREDNE KARTICE SA VAŠIM SLIKAMA, BROJEM I TEKSTOM BEZ PREKLAPANJA */
-        .category-cards-container {
+        /* PRIKAZ VAŠIH GOTOVIH BANERA */
+        .category-banners-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-bottom: 15px;
         }
 
-        .category-card-item {
-            background: #ffffff;
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .category-banner-btn {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid transparent;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: #fff;
+            padding: 0;
+            display: block;
         }
 
-        .category-card-item:hover {
-            border-color: #cbd5e1;
+        .category-banner-btn img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
         }
 
-        .category-thumb {
-            width: 65px;
-            height: 50px;
-            border-radius: 8px;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-            background: #f1f5f9;
-        }
-
-        .category-badge-num {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1rem;
-            flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .category-info {
-            flex-grow: 1;
-        }
-
-        .category-title {
-            font-size: 0.92rem;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1.25;
-            margin-bottom: 2px;
-        }
-
-        .category-desc {
-            font-size: 0.76rem;
-            color: var(--text-light);
-            line-height: 1.2;
-        }
-
-        .category-card-item.selected {
-            border-color: var(--primary);
-            background-color: #ecfdf5;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-        }
-
-        .category-card-item.selected .category-badge-num {
-            background: var(--primary-dark);
+        .category-banner-btn.selected {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+            transform: scale(1.01);
         }
 
         input, textarea {
@@ -339,73 +295,38 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" required onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA SA VAŠIM SLIKAMA, BROJEVIMA I TEKSTOM -->
+                    <!-- PRIKAZ TAČNO VAŠIH SLIKA IZ GITHUB REPOZITORIJA -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
-                        <div class="category-cards-container">
-                            <div class="category-card-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <img src="https://images.unsplash.com/photo-1532996122724-e3c359a0b15b?auto=format&fit=crop&w=200&q=80" class="category-thumb" alt="Otpad">
-                                <div class="category-badge-num">1</div>
-                                <div class="category-info">
-                                    <div class="category-title">Bacanje otpada na javnoj površini</div>
-                                    <div class="category-desc">Pravilno odlaganje čuva našu okolinu.</div>
-                                </div>
+                        <div class="category-banners-list">
+                            <div class="category-banner-btn selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <img src="kat1.jpg – Bacanje otpada.jpg" alt="1 - Bacanje otpada na javnoj površini">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=200&q=80" class="category-thumb" alt="Parkiranje">
-                                <div class="category-badge-num">2</div>
-                                <div class="category-info">
-                                    <div class="category-title">Nepropisno parkiranje (trotoar / zelenilo)</div>
-                                    <div class="category-desc">Ostavimo prostor za pešake i zelene površine.</div>
-                                </div>
+                            <div class="category-banner-btn" onclick="selectCategory(this, 'Nepropisno parkiranje (trotoar / zelenilo)')">
+                                <img src="kat2.jpg – Nepropisno parkiranje.jpg" alt="2 - Nepropisno parkiranje">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Psi lutalice')">
-                                <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=200&q=80" class="category-thumb" alt="Psi">
-                                <div class="category-badge-num">3</div>
-                                <div class="category-info">
-                                    <div class="category-title">Psi lutalice</div>
-                                    <div class="category-desc">Briga o životinjama je briga o bezbednosti.</div>
-                                </div>
+                            <div class="category-banner-btn" onclick="selectCategory(this, 'Psi lutalice')">
+                                <img src="kat3.jpg – Psi lutalice.jpg" alt="3 - Psi lutalice">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
-                                <img src="https://images.unsplash.com/photo-1508873696983-2df5c920aac9?auto=format&fit=crop&w=200&q=80" class="category-thumb" alt="Požar">
-                                <div class="category-badge-num">4</div>
-                                <div class="category-info">
-                                    <div class="category-title">Vatra na otvorenom - požar - dim</div>
-                                    <div class="category-desc">Brza reakcija sprečava štetu.</div>
-                                </div>
+                            <div class="category-banner-btn" onclick="selectCategory(this, 'Vatra na otvorenom / Požar / Dim')">
+                                <img src="kat4.jpg" alt="4 - Vatra na otvorenom / Požar / Dim">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Divlja deponija')">
-                                <img src="https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=200&q=80" class="category-thumb" alt="Deponija">
-                                <div class="category-badge-num">5</div>
-                                <div class="category-info">
-                                    <div class="category-title">Divlja deponija</div>
-                                    <div class="category-desc">Prijavite nelegalno odlaganje otpada.</div>
-                                </div>
+                            <div class="category-banner-btn" onclick="selectCategory(this, 'Divlja deponija')">
+                                <img src="kat5.jpg – Divlja deponija.jpg" alt="5 - Divlja deponija">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <img src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=200&q=80" class="category-thumb" alt="Put">
-                                <div class="category-badge-num">6</div>
-                                <div class="category-info">
-                                    <div class="category-title">Rupa na putu - oštećen kolovoz</div>
-                                    <div class="category-desc">Obezbedimo sigurnije saobraćajnice.</div>
-                                </div>
+                            <div class="category-banner-btn" onclick="selectCategory(this, 'Rupa na putu / Oštećen kolovoz')">
+                                <img src="kat6.jpg – Rupa na putu.jpg" alt="6 - Rupa na putu / Oštećen kolovoz">
                             </div>
 
-                            <div class="category-card-item" onclick="selectCategory(this, 'Ostalo')">
-                                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=200&q=80" class="category-thumb" alt="Ostalo">
-                                <div class="category-badge-num">7</div>
-                                <div class="category-info">
-                                    <div class="category-title">Ostalo</div>
-                                    <div class="category-desc">Ostali komunalni problemi.</div>
-                                </div>
+                            <div class="category-banner-btn" onclick="selectCategory(this, 'Ostali komunalni problemi')">
+                                <img src="kat7.jpg" alt="7 - Ostali komunalni problemi">
                             </div>
                         </div>
                     </div>
@@ -500,7 +421,7 @@
         let map = null;
 
         function selectCategory(element, catName) {
-            document.querySelectorAll('.category-card-item').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.category-banner-btn').forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selectedCategory').value = catName;
         }
