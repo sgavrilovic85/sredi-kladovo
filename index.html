@@ -82,87 +82,56 @@
             color: var(--text);
         }
 
-        /* BANERI KATEGORIJA SA SLIKAMA U POZADINI */
-        .category-banners {
+        /* STABILAN I ČIST DIZAJN SA KRUŽIĆEM I TEKSTOM */
+        .category-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-bottom: 15px;
         }
 
-        .category-banner {
-            position: relative;
-            height: 90px;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 2px solid var(--border);
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            display: flex;
-            align-items: center;
-            background-size: cover;
-            background-position: center;
-            background-color: #e2e8f0;
+            transition: all 0.2s ease;
+            background: #fff;
         }
 
-        .category-banner::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 65%, rgba(255,255,255,0.65) 100%);
-            z-index: 1;
-        }
-
-        .category-banner.bg-1 { background-image: url('https://images.unsplash.com/photo-1532996122724-e3c359a0b15b?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-2 { background-image: url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-3 { background-image: url('https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-4 { background-image: url('https://images.unsplash.com/photo-1508873696983-2df5c920aac9?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-5 { background-image: url('https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-6 { background-image: url('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=600&q=80'); }
-        .category-banner.bg-7 { background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80'); }
-
-        .banner-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 0 16px;
-            gap: 15px;
-        }
-
-        .banner-number {
-            width: 42px;
-            height: 42px;
-            background: var(--primary);
-            color: white;
+        .category-num {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 1rem;
             flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        .banner-text {
-            color: #0f172a;
-            font-size: 0.95rem;
-            font-weight: 700;
+        .category-item span {
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: var(--text);
             line-height: 1.3;
         }
 
-        .category-banner.selected {
+        .category-item.selected {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
-            transform: scale(1.01);
+            background-color: #ecfdf5;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
         }
 
-        .category-banner.selected .banner-number {
-            background: var(--primary-dark);
-            color: white;
+        .category-item.selected .category-num {
+            background-color: var(--primary-dark);
         }
 
         input, textarea {
@@ -309,6 +278,16 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -334,59 +313,45 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
 
-                    <!-- 7 KATEGORIJA SA SLIKAMA U POZADINI -->
+                    <!-- 7 KATEGORIJA SA KRUŽIĆIMA I TEKSTOM -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
-                        <div class="category-banners">
-                            <div class="category-banner bg-1 selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <div class="banner-content">
-                                    <div class="banner-number">1</div>
-                                    <div class="banner-text">Bacanje otpada na javnoj površini</div>
-                                </div>
+                        <div class="category-list">
+                            <div class="category-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
+                                <div class="category-num">1</div>
+                                <span>Bacanje otpada na javnoj površini</span>
                             </div>
 
-                            <div class="category-banner bg-2" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
-                                <div class="banner-content">
-                                    <div class="banner-number">2</div>
-                                    <div class="banner-text">Nepropisno parkiranje na trotoaru ili zelenoj površini</div>
-                                </div>
+                            <div class="category-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
+                                <div class="category-num">2</div>
+                                <span>Nepropisno parkiranje na trotoaru ili zelenoj površini</span>
                             </div>
 
-                            <div class="category-banner bg-3" onclick="selectCategory(this, 'Psi lutalice')">
-                                <div class="banner-content">
-                                    <div class="banner-number">3</div>
-                                    <div class="banner-text">Psi lutalice</div>
-                                </div>
+                            <div class="category-item" onclick="selectCategory(this, 'Psi lutalice')">
+                                <div class="category-num">3</div>
+                                <span>Psi lutalice</span>
                             </div>
 
-                            <div class="category-banner bg-4" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
-                                <div class="banner-content">
-                                    <div class="banner-number">4</div>
-                                    <div class="banner-text">Vatra na otvorenom - požar - dim</div>
-                                </div>
+                            <div class="category-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <div class="category-num">4</div>
+                                <span>Vatra na otvorenom - požar - dim</span>
                             </div>
 
-                            <div class="category-banner bg-5" onclick="selectCategory(this, 'Divlja deponija')">
-                                <div class="banner-content">
-                                    <div class="banner-number">5</div>
-                                    <div class="banner-text">Divlja deponija</div>
-                                </div>
+                            <div class="category-item" onclick="selectCategory(this, 'Divlja deponija')">
+                                <div class="category-num">5</div>
+                                <span>Divlja deponija</span>
                             </div>
 
-                            <div class="category-banner bg-6" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
-                                <div class="banner-content">
-                                    <div class="banner-number">6</div>
-                                    <div class="banner-text">Rupa na putu - oštećen kolovoz</div>
-                                </div>
+                            <div class="category-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <div class="category-num">6</div>
+                                <span>Rupa na putu - oštećen kolovoz</span>
                             </div>
 
-                            <div class="category-banner bg-7" onclick="selectCategory(this, 'Ostalo')">
-                                <div class="banner-content">
-                                    <div class="banner-number">7</div>
-                                    <div class="banner-text">Ostalo</div>
-                                </div>
+                            <div class="category-item" onclick="selectCategory(this, 'Ostalo')">
+                                <div class="category-num">7</div>
+                                <span>Ostalo</span>
                             </div>
                         </div>
                     </div>
@@ -419,7 +384,7 @@
             </div>
         </div>
 
-        <!-- SEKCIJA 3: NAGRADE (SAMO PREUZIMANJE) -->
+        <!-- SEKCIJA 3: NAGRADE -->
         <div id="tab-nagrade" class="tab-content">
             <div class="points-badge">
                 <span>Vaši sakupljeni bodovi:</span>
@@ -430,18 +395,9 @@
                 <h3 style="margin-bottom: 12px;">🎁 Dostupni popusti i nagrade</h3>
                 <div id="rewardsList"></div>
             </div>
-        </div>
-
-        <!-- SEKCIJA 4: PROFIL I ADMIN PANEL ZA SPONZORE -->
-        <div id="tab-profil" class="tab-content">
-            <div class="card">
-                <h3>👤 Profil korisnika</h3>
-                <p style="margin-top:10px; color:var(--text-light);">Bodovi se čuvaju na vašem uređaju.</p>
-                <p style="margin-top:10px;"><strong>Servisni mejl:</strong> sredikladovo@gmail.com[cite: 1]</p>
-            </div>
 
             <div class="card" style="border-left: 4px solid var(--primary);">
-                <h3 style="margin-bottom: 12px;">➕ Admin Panel: Dodaj novog sponzora</h3>
+                <h3 style="margin-bottom: 12px;">➕ Dodaj novog sponzora / popust</h3>
                 <form id="sponsorForm">
                     <div class="form-group">
                         <label>Naziv radnje / Sponzora</label>
@@ -457,6 +413,15 @@
                     </div>
                     <button type="submit" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:6px; font-weight:600; width:100%;">Sačuvaj sponzora</button>
                 </form>
+            </div>
+        </div>
+
+        <!-- SEKCIJA 4: PROFIL -->
+        <div id="tab-profil" class="tab-content">
+            <div class="card">
+                <h3>👤 Profil korisnika</h3>
+                <p style="margin-top:10px; color:var(--text-light);">Bodovi se čuvaju na vašem uređaju.</p>
+                <p style="margin-top:10px;"><strong>Servisni mejl:</strong> sredikladovo@gmail.com[cite: 1]</p>
             </div>
         </div>
 
@@ -481,7 +446,7 @@
         let map = null;
 
         function selectCategory(element, catName) {
-            document.querySelectorAll('.category-banner').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.category-item').forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selectedCategory').value = catName;
         }
@@ -580,7 +545,7 @@
             const list = document.getElementById('rewardsList');
             list.innerHTML = '';
             if (sponsors.length === 0) {
-                list.innerHTML = '<p style="color:var(--text-light); font-size:0.9rem;">Trenutno nema unetih nagrada.</p>';
+                list.innerHTML = '<p style="color:var(--text-light); font-size:0.9rem;">Trenutno nema unetih nagrada. Dodajte sponzora ispod!</p>';
                 return;
             }
             sponsors.forEach((s) => {
@@ -592,6 +557,7 @@
                         </div>
                         <div>
                             <button onclick="claimReward(${s.cost})" style="padding:5px 10px; font-size:0.8rem; background:var(--primary); color:white; border:none; border-radius:5px;">Preuzmi</button>
+                            <button class="delete-btn" onclick="deleteSponsor(${s.id})">✕</button>
                         </div>
                     </div>
                 `;
@@ -609,8 +575,13 @@
             localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
             renderRewards();
             this.reset();
-            alert('Uspešno dodat novi sponzor!');
         });
+
+        function deleteSponsor(id) {
+            sponsors = sponsors.filter(s => s.id !== id);
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+            renderRewards();
+        }
 
         function claimReward(cost) {
             if (points >= cost) {
