@@ -257,6 +257,23 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        /* Stilovi za PIN Admin Zaštitu */
+        .admin-lock-card {
+            border: 1px dashed var(--border);
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .admin-pin-input {
+            letter-spacing: 4px;
+            text-align: center;
+            font-size: 1.2rem;
+            max-width: 160px;
+            margin: 10px auto;
+        }
     </style>
 </head>
 <body>
@@ -359,15 +376,25 @@
             </div>
         </div>
 
-        <!-- SEKCIJA 4: PROFIL I ADMIN PANEL -->
+        <!-- SEKCIJA 4: PROFIL I ADMIN PANEL SA PIN ZAŠTITOM -->
         <div id="tab-profil" class="tab-content">
             <div class="card">
                 <h3>👤 Profil korisnika</h3>
-                <p style="margin-top:10px; color:var(--text-light);">Bodovi se čuvaju na vašem uređaju.</p>
+                <p style="margin-top:10px; color:var(--text-light);">Bodovi i prijave se čuvaju na vašem uređaju.</p>
                 <p style="margin-top:10px;"><strong>Servisni mejl:</strong> sredikladovo@gmail.com</p>
             </div>
 
-            <div class="card" style="border-left: 4px solid var(--primary);">
+            <!-- PIN ZAKLJUČAVANJE -->
+            <div id="adminLockArea" class="admin-lock-card">
+                <p style="font-weight: 600; color: var(--text);">🔐 Zaštićeni Admin Panel</p>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 4px;">Unesite PIN za dodavanje sponzora</p>
+                <input type="password" id="adminPinInput" class="admin-pin-input" maxlength="6" placeholder="****">
+                <br>
+                <button onclick="unlockAdmin()" style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer;">Otključaj</button>
+            </div>
+
+            <!-- SAKRIVEN ADMIN PANEL (Prikazuje se tek nakon PIN-a) -->
+            <div id="adminPanelArea" class="card" style="border-left: 4px solid var(--primary); display: none; margin-top: 15px;">
                 <h3 style="margin-bottom: 12px;">➕ Admin Panel: Dodaj novog sponzora</h3>
                 <form id="sponsorForm">
                     <div class="form-group">
@@ -383,7 +410,7 @@
                         <input type="number" id="sponsorCost" min="1" max="20" value="5" required>
                     </div>
                     <button type="submit" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:6px; font-weight:600; width:100%;">Sačuvaj sponzora</button>
-                </form>
+                </button>
             </div>
         </div>
 
@@ -406,6 +433,18 @@
         let gpsAccuracy = 19;
         let currentBase64Image = '';
         let map = null;
+
+        const ADMIN_PIN = "1234"; // Vaš PIN za ulaz u Admin panel
+
+        function unlockAdmin() {
+            const enteredPin = document.getElementById('adminPinInput').value;
+            if (enteredPin === ADMIN_PIN) {
+                document.getElementById('adminLockArea').style.display = 'none';
+                document.getElementById('adminPanelArea').style.display = 'block';
+            } else {
+                alert('Pogrešan PIN kod!');
+            }
+        }
 
         function selectCategory(element, catName) {
             document.querySelectorAll('.category-card-item').forEach(item => item.classList.remove('selected'));
@@ -501,7 +540,13 @@
         // Bodovi i Sponzori
         let points = parseInt(localStorage.getItem('sk_points')) || 0;
         document.getElementById('userPoints').innerText = points;
-        let sponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [];
+        
+        // Podrazumevani sponzori + oni uneti iz memorije
+        let defaultSponsors = [
+            { id: 1, name: "Blic Perionica Kladovo", offer: "15% popusta na pranje", cost: 5 }
+        ];
+        let savedSponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [];
+        let sponsors = [...defaultSponsors, ...savedSponsors];
 
         function renderRewards() {
             const list = document.getElementById('rewardsList');
@@ -518,7 +563,7 @@
                             <span style="font-size:0.85rem; color:var(--text-light);">${s.offer} (${s.cost} b.)</span>
                         </div>
                         <div>
-                            <button onclick="claimReward(${s.cost})" style="padding:5px 10px; font-size:0.8rem; background:var(--primary); color:white; border:none; border-radius:5px;">Preuzmi</button>
+                            <button onclick="claimReward(${s.cost})" style="padding:5px 10px; font-size:0.8rem; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">Preuzmi</button>
                         </div>
                     </div>
                 `;
@@ -532,8 +577,11 @@
             const offer = document.getElementById('sponsorOffer').value;
             const cost = parseInt(document.getElementById('sponsorCost').value);
 
-            sponsors.push({ id: Date.now(), name, offer, cost });
-            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+            const newSponsor = { id: Date.now(), name, offer, cost };
+            savedSponsors.push(newSponsor);
+            sponsors.push(newSponsor);
+
+            localStorage.setItem('sk_sponsors', JSON.stringify(savedSponsors));
             renderRewards();
             this.reset();
             alert('Uspešno dodat novi sponzor!');
@@ -546,7 +594,7 @@
                 document.getElementById('userPoints').innerText = points;
                 alert('Uspešno preuzet kupon!');
             } else {
-                alert('Nemate dovoljno bodova.');
+                alert('Nemate dovoljno bodova za ovu nagradu.');
             }
         }
 
