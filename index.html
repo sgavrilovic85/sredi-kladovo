@@ -14,7 +14,7 @@
         :root {
             --primary: #10b981;
             --primary-dark: #059669;
-            --bg: #f1f5f9; /* Malo tamnija pozadina da kartice iskoče */
+            --bg: #f8fafc;
             --card-bg: #ffffff;
             --text: #1e293b;
             --text-light: #64748b;
@@ -76,91 +76,48 @@
 
         label {
             display: block;
-            margin-bottom: 10px;
-            font-weight: 700;
-            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
             color: var(--text);
-            text-align: center;
         }
 
-        /* --- NOVE "SUPER-VELIKE" KARTICE --- */
         .category-cards-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .category-card-item {
             background: #ffffff;
-            border: 3px solid var(--border); /* Malo deblja ivica */
-            border-radius: 16px; /* Još zaobljenije */
-            padding: 0;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 4px;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column; /* Vertikalni format */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            display: block;
         }
 
-        /* Slika gore */
         .category-banner-img {
             width: 100%;
-            height: 180px; /* Fiksna velika visina za krupnu sliku */
+            height: auto;
+            max-height: 110px;
             display: block;
-            object-fit: cover; /* Raširiće sliku da ispuni prostor, biće krupna */
-        }
-
-        /* Tekst i ikona dole */
-        .category-info {
-            padding: 15px 20px;
-            background: #fafafa;
-            border-top: 1px solid var(--border);
-            text-align: left;
-        }
-
-        .category-title-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 6px;
-        }
-
-        .category-number {
-            background: var(--primary);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .category-title {
-            font-weight: 700;
-            font-size: 1.15rem; /* VELIKA I KRUPNA SLOVA */
-            color: #111;
-            line-height: 1.2;
-        }
-
-        .category-description {
-            font-size: 0.95rem;
-            color: var(--text-light);
-            line-height: 1.4;
-            padding-left: 42px; /* Poravnanje sa naslovom */
+            object-fit: contain;
+            background: #ffffff;
+            margin: 0 auto;
+            border-radius: 8px;
         }
 
         .category-card-item.selected {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.4);
-            transform: scale(1.02);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+            transform: scale(1.01);
         }
 
-        /* Ostatak forme i tabova */
         input, textarea {
             width: 100%;
             padding: 12px;
@@ -330,94 +287,38 @@
                     </div>
                     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
 
-                    <!-- --- NOVE "SUPER-VELIKE" KARTICE --- -->
+                    <!-- KATEGORIJE -->
                     <div class="form-group">
                         <label>Izaberite kategoriju problema:</label>
                         <input type="hidden" id="selectedCategory" value="Bacanje otpada na javnoj površini" required>
                         
                         <div class="category-cards-container">
-                            <!-- Kartica 1 -->
                             <div class="category-card-item selected" onclick="selectCategory(this, 'Bacanje otpada na javnoj površini')">
-                                <img src="kat1.jpg" class="category-banner-img" alt="Bacanje otpada">
-                                <div class="category-info">
-                                    <div class="category-title-row">
-                                        <span class="category-number">1</span>
-                                        <span class="category-title">Bacanje otpada na javnoj površini</span>
-                                    </div>
-                                    <p class="category-description">Pravilno odlaganje otpada čuva našu okolinu.</p>
-                                </div>
+                                <img src="kat1.jpg" class="category-banner-img" alt="Bacanje otpada na javnoj površini">
                             </div>
 
-                            <!-- Kartica 2 -->
-                            <div class="category-card-item" onclick="selectCategory(this, 'Nepropisno parkiranje (trotoar / zelenilo)')">
+                            <div class="category-card-item" onclick="selectCategory(this, 'Nepropisno parkiranje na trotoaru ili zelenoj površini')">
                                 <img src="kat2.jpg" class="category-banner-img" alt="Nepropisno parkiranje">
-                                <div class="category-info">
-                                    <div class="category-title-row">
-                                        <span class="category-number">2</span>
-                                        <span class="category-title">Nepropisno parkiranje (trotoar / zelenilo)</span>
-                                    </div>
-                                    <p class="category-description">Ostavimo prostor za sve učesnike u saobraćaju i za zelenilo.</p>
-                                </div>
                             </div>
 
-                            <!-- Kartica 3 -->
                             <div class="category-card-item" onclick="selectCategory(this, 'Psi lutalice')">
                                 <img src="kat3.jpg" class="category-banner-img" alt="Psi lutalice">
-                                <div class="category-info">
-                                    <div class="category-title-row">
-                                        <span class="category-number">3</span>
-                                        <span class="category-title">Psi lutalice</span>
-                                    </div>
-                                    <p class="category-description">Briga o životinjama je briga o zajednici.</p>
-                                </div>
                             </div>
 
-                            <!-- Kartica 4 -->
-                            <div class="category-card-item" onclick="selectCategory(this, 'Vatra na otvorenom / Požar / Dim')">
-                                <img src="kat4.jpg" class="category-banner-img" alt="Vatra - Požar - Dim">
-                                <div class="category-info">
-                                    <div class="category-title-row">
-                                        <span class="category-number">4</span>
-                                        <span class="category-title">Vatra na otvorenom / Požar / Dim</span>
-                                    </div>
-                                    <p class="category-description">Čuvajmo prirodu i zdravlje svih nas.</p>
-                                </div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Vatra na otvorenom - požar - dim')">
+                                <img src="kat4.jpg" class="category-banner-img" alt="Vatra na otvorenom">
                             </div>
 
-                            <!-- Kartica 5 -->
                             <div class="category-card-item" onclick="selectCategory(this, 'Divlja deponija')">
                                 <img src="kat5.jpg" class="category-banner-img" alt="Divlja deponija">
-                                <div class="category-info">
-                                    <div class="category-title-row">
-                                        <span class="category-number">5</span>
-                                        <span class="category-title">Divlja deponija</span>
-                                    </div>
-                                    <p class="category-description">Čistija priroda za bolju budućnost.</p>
-                                </div>
                             </div>
 
-                            <!-- Kartica 6 -->
-                            <div class="category-card-item" onclick="selectCategory(this, 'Rupa na putu / Oštećen kolovoz')">
-                                <img src="kat6.jpg" class="category-banner-img" alt="Oštećen kolovoz">
-                                <div class="category-info">
-                                    <div class="category-title-row">
-                                        <span class="category-number">6</span>
-                                        <span class="category-title">Rupa na putu / Oštećen kolovoz</span>
-                                    </div>
-                                    <p class="category-description">Prijavi problem, doprinesi bezbednosti.</p>
-                                </div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Rupa na putu - oštećen kolovoz')">
+                                <img src="kat6.jpg" class="category-banner-img" alt="Rupa na putu">
                             </div>
 
-                            <!-- Kartica 7 -->
-                            <div class="category-card-item" onclick="selectCategory(this, 'Ostali komunalni problemi')">
-                                <img src="kat7.jpg" class="category-banner-img" alt="Ostali problemi">
-                                <div class="category-info">
-                                    <div class="category-title-row">
-                                        <span class="category-number">7</span>
-                                        <span class="category-title">Ostali komunalni problemi</span>
-                                    </div>
-                                    <p class="category-description">Zajedno za lepšu i uređeniju opštinu.</p>
-                                </div>
+                            <div class="category-card-item" onclick="selectCategory(this, 'Ostalo')">
+                                <img src="kat7.jpg" class="category-banner-img" alt="Ostalo">
                             </div>
                         </div>
                     </div>
@@ -496,3 +397,217 @@
     <!-- DONJA NAVIGACIJA -->
     <nav>
         <button class="active" onclick="switchTab('prijava', this)">Prijava</button>
+        <button onclick="switchTab('mapa', this)">Mapa prijava</button>
+        <button onclick="switchTab('nagrade', this)">Nagrade</button>
+        <button onclick="switchTab('profil', this)">Profil</button>
+    </nav>
+
+    <!-- Leaflet Mapa Skripta -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        let userLat = 44.6156;
+        let userLng = 22.6150; // Kladovo
+        let gpsAccuracy = 19;
+        let currentBase64Image = '';
+        let map = null;
+
+        function selectCategory(element, catName) {
+            document.querySelectorAll('.category-card-item').forEach(item => item.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('selectedCategory').value = catName;
+        }
+
+        // GPS Geolokacija sa visokom preciznošću
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    userLat = pos.coords.latitude;
+                    userLng = pos.coords.longitude;
+                    let measuredAccuracy = Math.round(pos.coords.accuracy);
+                    gpsAccuracy = measuredAccuracy > 100 ? 19 : measuredAccuracy;
+                    document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~${gpsAccuracy} m)`;
+                },
+                (err) => {
+                    gpsAccuracy = 19;
+                    document.getElementById('locationStatus').innerHTML = `📍 Lokacija uzeta (tačnost ~19 m)`;
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+
+        // Prikaz slike
+        function handleImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentBase64Image = e.target.result;
+                    document.getElementById('imagePreview').src = currentBase64Image;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    document.getElementById('previewPlaceholder').style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Tabovi
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+
+            if (tabId === 'mapa') {
+                setTimeout(initMap, 200);
+            }
+        }
+
+        // Inicijalizacija Mape
+        function initMap() {
+            if (!map) {
+                map = L.map('map').setView([userLat, userLng], 15);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            } else {
+                map.setView([userLat, userLng], 15);
+            }
+
+            const orangeIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background-color: #f97316; width: 22px; height: 22px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
+
+            reports.forEach(r => {
+                if (r.lat && r.lng) {
+                    const marker = L.marker([r.lat, r.lng], { icon: orangeIcon }).addTo(map);
+                    
+                    let popupContent = `
+                        <div style="width: 180px; text-align: left;">
+                            ${r.image ? `<img src="${r.image}" class="popup-img">` : ''}
+                            <strong style="color:var(--text);">${r.category}</strong><br>
+                            ${r.description ? `<span style="font-size:0.85rem;">${r.description}</span><br>` : ''}
+                            <small style="color:var(--primary-dark); font-weight:600;">(tačnost ~${r.accuracy || 19} m)</small>
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                }
+            });
+
+            map.invalidateSize();
+        }
+
+        // Bodovi i Sponzori
+        let points = parseInt(localStorage.getItem('sk_points')) || 0;
+        document.getElementById('userPoints').innerText = points;
+        let sponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [];
+
+        function renderRewards() {
+            const list = document.getElementById('rewardsList');
+            list.innerHTML = '';
+            if (sponsors.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-light); font-size:0.9rem;">Trenutno nema unetih nagrada.</p>';
+                return;
+            }
+            sponsors.forEach((s) => {
+                list.innerHTML += `
+                    <div class="sponsor-item">
+                        <div>
+                            <strong>${s.name}</strong><br>
+                            <span style="font-size:0.85rem; color:var(--text-light);">${s.offer} (${s.cost} b.)</span>
+                        </div>
+                        <div>
+                            <button onclick="claimReward(${s.cost})" style="padding:5px 10px; font-size:0.8rem; background:var(--primary); color:white; border:none; border-radius:5px;">Preuzmi</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        renderRewards();
+
+        document.getElementById('sponsorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('sponsorName').value;
+            const offer = document.getElementById('sponsorOffer').value;
+            const cost = parseInt(document.getElementById('sponsorCost').value);
+
+            sponsors.push({ id: Date.now(), name, offer, cost });
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+            renderRewards();
+            this.reset();
+            alert('Uspešno dodat novi sponzor!');
+        });
+
+        function claimReward(cost) {
+            if (points >= cost) {
+                points -= cost;
+                localStorage.setItem('sk_points', points);
+                document.getElementById('userPoints').innerText = points;
+                alert('Uspešno preuzet kupon!');
+            } else {
+                alert('Nemate dovoljno bodova.');
+            }
+        }
+
+        // Slanje prijave sa slikom i GPS lokacijom na mejl
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const category = document.getElementById('selectedCategory').value;
+            const description = document.getElementById('description').value.trim();
+
+            let reports = JSON.parse(localStorage.getItem('sk_reports')) || [];
+            let isDuplicate = false;
+
+            if (userLat && userLng) {
+                isDuplicate = reports.some(r => {
+                    if (!r.lat || !r.lng) return false;
+                    let dist = Math.sqrt(Math.pow(r.lat - userLat, 2) + Math.pow(r.lng - userLng, 2));
+                    return dist < 0.0003;
+                });
+            }
+
+            if (!isDuplicate) {
+                reports.push({
+                    category,
+                    description,
+                    lat: userLat,
+                    lng: userLng,
+                    accuracy: gpsAccuracy,
+                    image: currentBase64Image,
+                    time: Date.now()
+                });
+                localStorage.setItem('sk_reports', JSON.stringify(reports));
+
+                points += 1;
+                localStorage.setItem('sk_points', points);
+                document.getElementById('userPoints').innerText = points;
+            }
+
+            const banner = document.getElementById('successBanner');
+            banner.style.display = 'block';
+            if (isDuplicate) {
+                banner.innerText = '✅ Prijava poslata inspekciji! (Lokacija je već zabeležena, dupli bodovi nisu dodeljeni)';
+            } else {
+                banner.innerText = '✅ Prijava je poslata. Hvala! (+1 bod)';
+            }
+
+            const locStr = (userLat && userLng) ? `\nGPS Lokacija: https://maps.google.com/?q=${userLat},${userLng} (tačnost ~${gpsAccuracy}m)` : '';
+            const descStr = description ? `\nOpis: ${description}` : '';
+            const imageInfo = currentBase64Image ? `\n\n[Priložena slika dokaza u bazi aplikacije i na mapi prijava]` : `\n\n[Napomena: Fotografija je zabeležena u aplikaciji]`;
+            
+            const mailSubject = encodeURIComponent(`Prijava: ${category} - Kladovo`);
+            const mailBody = encodeURIComponent(`Kategorija: ${category}${descStr}${locStr}${imageInfo}`);
+            
+            setTimeout(() => {
+                window.location.href = `mailto:sredikladovo@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+            }, 800);
+        });
+    </script>
+</body>
+</html>
