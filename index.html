@@ -87,15 +87,24 @@
             flex-direction: column;
             gap: 15px;
             margin-bottom: 15px;
-            max-height: 420px; /* Visina kontejnera, sve preko ovoga se skroluje */
-            overflow-y: auto;  /* Omogućava glatko skrolovanje */
-            padding-right: 5px;
+        }
+
+        .category-card-item {
+            background: #ffffff;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            margin-bottom: 8px;
+            display: block;
         }
 
         .category-banner-img {
             width: 100%;
-            height: auto;
-            max-height: 110px; /* Povećava visinu svake slike da budu krupne i jasne */
+            height: 140px;
             display: block;
             object-fit: cover;
             border-radius: 10px;
