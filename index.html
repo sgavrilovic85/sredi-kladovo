@@ -274,6 +274,17 @@
             max-width: 180px;
             margin: 10px auto;
         }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -387,13 +398,13 @@
             <!-- PIN ZAKLJUČAVANJE -->
             <div id="adminLockArea" class="admin-lock-card">
                 <p style="font-weight: 600; color: var(--text);">🔐 Zaštićeni Admin Panel</p>
-                <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 4px;">Unesite PIN za dodavanje sponzora</p>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 4px;">Unesite PIN za upravljanje sponzorima</p>
                 <input type="password" id="adminPinInput" class="admin-pin-input" maxlength="6" placeholder="******">
                 <br>
                 <button onclick="unlockAdmin()" style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer;">Otključaj</button>
             </div>
 
-            <!-- SAKRIVEN ADMIN PANEL (Prikazuje se tek nakon ispravnog PIN-a) -->
+            <!-- SAKRIVEN ADMIN PANEL -->
             <div id="adminPanelArea" class="card" style="border-left: 4px solid var(--primary); display: none; margin-top: 15px;">
                 <h3 style="margin-bottom: 12px;">➕ Admin Panel: Dodaj novog sponzora</h3>
                 <form id="sponsorForm">
@@ -411,6 +422,10 @@
                     </div>
                     <button type="submit" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:6px; font-weight:600; width:100%; cursor:pointer;">Sačuvaj sponzora</button>
                 </form>
+
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);">
+                <h4 style="margin-bottom: 10px;">🗑️ Upravljanje sponzorima (Brisanje)</h4>
+                <div id="adminSponsorsList"></div>
             </div>
         </div>
 
@@ -434,13 +449,14 @@
         let currentBase64Image = '';
         let map = null;
 
-        const ADMIN_PIN = "929566"; // Vaš novi PIN kod za pristup Admin panelu
+        const ADMIN_PIN = "929566"; // Vaš PIN za pristup
 
         function unlockAdmin() {
             const enteredPin = document.getElementById('adminPinInput').value;
             if (enteredPin === ADMIN_PIN) {
                 document.getElementById('adminLockArea').style.display = 'none';
                 document.getElementById('adminPanelArea').style.display = 'block';
+                renderAdminSponsors();
             } else {
                 alert('Pogrešan PIN kod!');
             }
@@ -452,7 +468,7 @@
             document.getElementById('selectedCategory').value = catName;
         }
 
-        // GPS Geolokacija sa visokom preciznošću
+        // GPS Geolokacija
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
@@ -540,12 +556,10 @@
         // Bodovi i Sponzori
         let points = parseInt(localStorage.getItem('sk_points')) || 0;
         document.getElementById('userPoints').innerText = points;
-        
-        let defaultSponsors = [
+
+        let sponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [
             { id: 1, name: "Blic Perionica Kladovo", offer: "15% popusta na pranje", cost: 5 }
         ];
-        let savedSponsors = JSON.parse(localStorage.getItem('sk_sponsors')) || [];
-        let sponsors = [...defaultSponsors, ...savedSponsors];
 
         function renderRewards() {
             const list = document.getElementById('rewardsList');
@@ -568,6 +582,29 @@
                 `;
             });
         }
+
+        function renderAdminSponsors() {
+            const adminList = document.getElementById('adminSponsorsList');
+            if (!adminList) return;
+            adminList.innerHTML = '';
+            if (sponsors.length === 0) {
+                adminList.innerHTML = '<p style="color:var(--text-light); font-size:0.85rem;">Nema sponzora za brisanje.</p>';
+                return;
+            }
+            sponsors.forEach((s) => {
+                adminList.innerHTML += `
+                    <div class="sponsor-item">
+                        <div>
+                            <strong>${s.name}</strong> (${s.cost} b.)
+                        </div>
+                        <div>
+                            <button onclick="deleteSponsor(${s.id})" class="btn-delete">Briši 🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         renderRewards();
 
         document.getElementById('sponsorForm').addEventListener('submit', function(e) {
@@ -577,14 +614,23 @@
             const cost = parseInt(document.getElementById('sponsorCost').value);
 
             const newSponsor = { id: Date.now(), name, offer, cost };
-            savedSponsors.push(newSponsor);
             sponsors.push(newSponsor);
 
-            localStorage.setItem('sk_sponsors', JSON.stringify(savedSponsors));
+            localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
             renderRewards();
+            renderAdminSponsors();
             this.reset();
             alert('Uspešno dodat novi sponzor!');
         });
+
+        function deleteSponsor(id) {
+            if (confirm('Da li ste sigurni da želite da obrišete ovog sponzora?')) {
+                sponsors = sponsors.filter(s => s.id !== id);
+                localStorage.setItem('sk_sponsors', JSON.stringify(sponsors));
+                renderRewards();
+                renderAdminSponsors();
+            }
+        }
 
         function claimReward(cost) {
             if (points >= cost) {
