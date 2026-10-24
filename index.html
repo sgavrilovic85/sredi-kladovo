@@ -278,6 +278,10 @@
         .category-cards-container{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:6px 4px 14px;-webkit-overflow-scrolling:touch;align-items:flex-start}
         .category-cards-container .category-card-item{flex:0 0 88%;max-width:440px;scroll-snap-align:center}
         .cat-hint{font-size:.8rem;color:var(--text-light);margin:-2px 0 8px}
+
+        .fwd-row{display:flex;gap:8px}
+        .fwd-row select{flex:1}
+        .b-fwd{padding:10px 14px;border:none;border-radius:8px;background:#0ea5e9;color:#fff;font-weight:600;cursor:pointer}
 </style>
 </head>
 <body>
@@ -436,6 +440,26 @@
                     <button type="button" id="logoutBtn" class="btn-submit" style="background:#64748b;margin-top:10px;">Odjavi se</button>
                 </div>
                 <p id="adminMsg" style="color:#b91c1c;margin-top:10px;font-weight:600;"></p>
+            </div>
+
+            <div id="alertCard" class="card" style="display:none;border-left:4px solid #f59e0b;">
+                <h3 style="margin-bottom:6px;">🔔 Zvučna obaveštenja (admin)</h3>
+                <p class="muted" style="margin-bottom:10px;">Kad stigne nova prijava, aplikacija zvuči i glasno kaže „Nova prijava" i kategoriju. Radi dok je ova stranica otvorena u pretraživaču (može da bude u pozadini). Ne radi kad je ekran zaključan.</p>
+                <button type="button" id="alertBtn" class="btn-submit" style="background:#f59e0b;">🔔 Uključi zvučna obaveštenja</button>
+                <p id="alertInfo" class="muted" style="margin-top:8px;"></p>
+            </div>
+
+            <div id="sluzbeAdmin" style="display:none;">
+                <div class="card" style="border-left:4px solid #0ea5e9;">
+                    <h3 style="margin-bottom:6px;">📬 Službe za prosleđivanje (admin)</h3>
+                    <p class="muted" style="margin-bottom:10px;">Upiši mejlove službi (komunalno, vodovod, opština...). U delu „Status" biraš službu i pritisneš „Prosledi".</p>
+                    <div id="sluzbeList" style="margin-bottom:12px;"></div>
+                    <form id="sluzbeForm">
+                        <div class="form-group"><label>Naziv službe</label><input type="text" id="slName" placeholder="Npr. JKP Komunalac" required></div>
+                        <div class="form-group"><label>Mejl službe</label><input type="email" id="slEmail" placeholder="mejl@sluzba.rs" required></div>
+                        <button type="submit" class="btn-submit" style="background:#0ea5e9;">Sačuvaj službu</button>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -609,6 +633,10 @@
                             <button type="button" class="b-save" onclick="saveReport(${id})">Sačuvaj</button>
                             <button type="button" class="b-del" onclick="deleteReport(${id})">Obriši</button>
                         </div>
+                        <div class="fwd-row">
+                            <select id="sl-${id}">${sluzbe.length ? sluzbe.map(x => `<option value="${Number(x.id)}">${esc(x.name)}</option>`).join('') : '<option value="">(prvo dodaj službe u Profil)</option>'}</select>
+                            <button type="button" class="b-fwd" onclick="forwardReport(${id})">📧 Prosledi</button>
+                        </div>
                     </div>` : '';
                 return `<div class="rep">
                     ${img ? `<img class="rep-img" src="${esc(img)}" alt="Slika prijave" loading="lazy">` : ''}
@@ -674,6 +702,20 @@
         $('logoutBtn').addEventListener('click', adminLogout);
         updateAdminUI();
 
+
+        /* ---------- provera duplikata: isti problem na istom mestu ---------- */
+        function distM(aLat, aLng, bLat, bLng) {
+            const R = 6371000, rad = Math.PI / 180;
+            const dLat = (bLat - aLat) * rad, dLng = (bLng - aLng) * rad;
+            const x = Math.sin(dLat / 2) ** 2 + Math.cos(aLat * rad) * Math.cos(bLat * rad) * Math.sin(dLng / 2) ** 2;
+            return 2 * R * Math.asin(Math.sqrt(x));
+        }
+        async function findDuplicate(category) {
+            const radius = Math.min(150, Math.max(50, gpsAccuracy || 0));
+            const rows = await (await api('/rest/v1/prijave?select=category,status,lat,lng,created_at&status=lt.2&limit=500')).json();
+            return rows.find(r => r.category === category && typeof r.lat === 'number' && distM(userLat, userLng, r.lat, r.lng) <= radius) || null;
+        }
+
         /* ---------- slanje prijave ---------- */
         $('reportForm').noValidate = true;
         $('reportForm').addEventListener('submit', async e => {
@@ -690,6 +732,12 @@
             const category = $('selectedCategory').value;
             const description = $('description').value.trim();
             try {
+                const dup = await findDuplicate(category);
+                if (dup && !confirm(`Na ovom mestu je već prijavljen isti problem (${fmt(dup.created_at)}, status: ${ST[dup.status || 0]}).\n\nAko je to ISTI problem, nema potrebe da ga prijavljuješ ponovo.\n\nPritisni „OK" samo ako je ovo DRUGI problem, a „Cancel" da odustaneš.`)) {
+                    show('ℹ️ Nije poslato: ovaj problem je već prijavljen. Prati ga u delu „Status".', false);
+                    btn.disabled = false;
+                    return;
+                }
                 const name = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
                 await api('/storage/v1/object/photos/' + name, {method: 'POST', headers: {'Content-Type': 'image/jpeg'}, body: currentBlob});
                 const photo_url = SB_URL + '/storage/v1/object/public/photos/' + name;
@@ -808,6 +856,116 @@
         }
         const _uau = updateAdminUI;
         updateAdminUI = function () { _uau(); $('sponsorAdmin').style.display = token ? 'block' : 'none'; if ($('tab-nagrade').classList.contains('active')) renderRewards(); };
+        updateAdminUI();
+
+        /* ---------- prosleđivanje službama ---------- */
+        var sluzbe = [];
+        async function loadSluzbe() {
+            if (!token) { sluzbe = []; return; }
+            try { sluzbe = await (await api('/rest/v1/sluzbe?select=*&order=name.asc', {}, true)).json(); } catch (e) { sluzbe = []; console.error(e); }
+            $('sluzbeList').innerHTML = sluzbe.length ? sluzbe.map(x => `
+                <div class="sponsor-item"><div><strong>${esc(x.name)}</strong><br><span style="font-size:.85rem;color:var(--text-light);">${esc(x.email)}</span></div>
+                <button class="delete-btn" onclick="deleteSluzba(${Number(x.id)})">✕</button></div>`).join('')
+                : '<p class="muted">Još nema službi.</p>';
+            renderStatus();
+        }
+        $('sluzbeForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            try {
+                await api('/rest/v1/sluzbe', {method: 'POST', headers: {'Content-Type': 'application/json', Prefer: 'return=minimal'},
+                    body: JSON.stringify({name: $('slName').value.trim(), email: $('slEmail').value.trim()})}, true);
+                e.target.reset(); loadSluzbe();
+            } catch (err) { adminError(err); }
+        });
+        async function deleteSluzba(id) {
+            if (!confirm('Obrisati ovu službu?')) return;
+            try { await api('/rest/v1/sluzbe?id=eq.' + id, {method: 'DELETE'}, true); loadSluzbe(); } catch (e) { adminError(e); }
+        }
+        function forwardReport(id) {
+            const r = items.find(x => Number(x.id) === id);
+            const sel = $('sl-' + id);
+            const sl = sel && sluzbe.find(x => String(x.id) === sel.value);
+            if (!r || !sl) { alert('Prvo dodaj službu: Profil → Administrator → Službe za prosleđivanje.'); return; }
+            const site = location.origin + location.pathname;
+            const subject = `Prijava građana: ${r.category} - Kladovo`;
+            const body = `Poštovani,\n\nPrijava građana preko aplikacije Sredi Kladovo:\n\n` +
+                `Kategorija: ${r.category}\n` +
+                `Opis: ${r.description || '(bez opisa)'}\n` +
+                `Datum prijave: ${fmt(r.created_at)}\n` +
+                `Lokacija: https://maps.google.com/?q=${r.lat},${r.lng}\n` +
+                `Fotografija: ${r.photo_url}\n` +
+                `Pregled prijava i statusa: ${site}\n\n` +
+                `Molimo vas da razmotrite prijavu i obavestite nas o postupanju.\n\nSa poštovanjem,\nSredi Kladovo`;
+            const url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(sl.email) +
+                '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+            window.open(url, '_blank');
+            setTimeout(async () => {
+                if (!confirm(`Da li si poslala mejl službi „${sl.name}"?\n\nOK = upiši u odgovor „Prosleđeno: ${sl.name}, ${fmt(new Date())}".\nCancel = ne upisuj ništa.`)) return;
+                const note = `Prosleđeno: ${sl.name}, ${fmt(new Date())}`;
+                const cur = (r.admin_comment || '').trim();
+                try {
+                    await api('/rest/v1/prijave?id=eq.' + id, {method: 'PATCH', headers: {'Content-Type': 'application/json', Prefer: 'return=minimal'},
+                        body: JSON.stringify({admin_comment: cur ? cur + ' | ' + note : note})}, true);
+                    loadReports();
+                } catch (e) { adminError(e); }
+            }, 1500);
+        }
+        const _uau2 = updateAdminUI;
+        updateAdminUI = function () { _uau2(); $('sluzbeAdmin').style.display = token ? 'block' : 'none'; loadSluzbe(); };
+        updateAdminUI();
+
+        /* ---------- zvučna obaveštenja (dok je stranica otvorena) ---------- */
+        var alertOn = false, lastSeenId = null, alertTimer = null, audioCtx = null;
+        function beep() {
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                [0, 0.4].forEach(t => {
+                    const o = audioCtx.createOscillator(), g = audioCtx.createGain(), now = audioCtx.currentTime + t;
+                    o.frequency.value = 880; o.connect(g); g.connect(audioCtx.destination);
+                    g.gain.setValueAtTime(0.25, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    o.start(now); o.stop(now + 0.3);
+                });
+            } catch (e) {}
+        }
+        function speak(text) {
+            try {
+                const u = new SpeechSynthesisUtterance(text), vs = speechSynthesis.getVoices();
+                const v = vs.find(x => /^sr/i.test(x.lang)) || vs.find(x => /^(hr|bs)/i.test(x.lang));
+                if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'sr-RS'; }
+                speechSynthesis.cancel(); speechSynthesis.speak(u);
+            } catch (e) {}
+        }
+        async function pollNew() {
+            try {
+                const rows = await (await api('/rest/v1/prijave?select=id,category&order=id.desc&limit=5')).json();
+                if (!rows.length) return;
+                const max = Math.max(...rows.map(r => Number(r.id)));
+                if (lastSeenId === null) { lastSeenId = max; return; }
+                const fresh = rows.filter(r => Number(r.id) > lastSeenId);
+                if (fresh.length) {
+                    lastSeenId = max;
+                    beep();
+                    setTimeout(() => speak(fresh.length > 1 ? `Stiglo je ${fresh.length} novih prijava.` : 'Nova prijava. ' + fresh[0].category), 900);
+                    loadReports();
+                    $('alertInfo').textContent = 'Poslednja nova prijava: ' + new Date().toLocaleTimeString('sr-RS');
+                }
+            } catch (e) { console.error(e); }
+        }
+        $('alertBtn').addEventListener('click', () => {
+            if (alertOn) { clearInterval(alertTimer); alertOn = false; $('alertInfo').textContent = 'Isključeno.'; }
+            else {
+                alertOn = true; lastSeenId = null; beep();
+                speak('Zvučna obaveštenja su uključena.');
+                pollNew(); alertTimer = setInterval(pollNew, 40000);
+                $('alertInfo').textContent = 'Uključeno. Proveravam nove prijave na svakih 40 sekundi.';
+            }
+            $('alertBtn').textContent = alertOn ? '🔕 Isključi zvučna obaveštenja' : '🔔 Uključi zvučna obaveštenja';
+        });
+        const _uau3 = updateAdminUI;
+        updateAdminUI = function () {
+            _uau3(); $('alertCard').style.display = token ? 'block' : 'none';
+            if (!token && alertOn) $('alertBtn').click();
+        };
         updateAdminUI();
     </script>
 </body>
