@@ -379,6 +379,7 @@
                 <h3 style="margin-bottom:10px;">📋 Status prijava</h3>
                 <select id="statusFilter">
                     <option value="all">Sve prijave</option>
+                    <option value="mine">Moje prijave</option>
                     <option value="0">Primljeno</option>
                     <option value="1">U radu</option>
                     <option value="2">Završeno</option>
@@ -423,10 +424,28 @@
 
         <!-- SEKCIJA 4: PROFIL I ADMIN -->
         <div id="tab-profil" class="tab-content">
+            <div class="card" id="myProfile" style="border-left:4px solid #3b82f6;">
+                <h3>👤 Moj profil</h3>
+                <div id="myProfileInfo" style="margin-top:8px;"></div>
+                <button type="button" class="btn-submit" style="margin-top:12px;" onclick="showMine()">📋 Pogledaj moje prijave</button>
+                <p class="muted" style="margin-top:10px;">Nema naloga ni lozinke: prijave i bodovi su vezani za ovaj telefon i pretraživač. Ako obrišeš podatke sajta ili promeniš telefon, nećeš ih videti pod „Moje prijave" (ostaju vidljive svima u delu „Status").</p>
+            </div>
+
             <div class="card">
                 <h3>ℹ️ O aplikaciji</h3>
                 <p style="margin-top:10px; color:var(--text-light);">Prijavi problem u Kladovu: uslikaj, aplikacija uzme lokaciju, a prijava se vidi na mapi i u delu „Status".</p>
                 <p style="margin-top:10px;"><strong>Kontakt:</strong> sredikladovo@gmail.com</p>
+            </div>
+
+            <div class="card" id="donorCard" style="display:none;border-left:4px solid #ec4899;">
+                <h3>💚 Podržali su aplikaciju</h3>
+                <p class="muted" style="margin:6px 0 10px;">Hvala donatorima koji pomažu rad aplikacije.</p>
+                <div id="donorList"></div>
+                <p class="muted" style="margin-top:10px;">Želiš da podržiš rad aplikacije? Javi se na sredikladovo@gmail.com.</p>
+                <form id="donorForm" style="display:none;margin-top:14px;">
+                    <div class="form-group"><label>Ime i prezime donatora (admin)</label><input type="text" id="donorName" maxlength="80" placeholder="Npr. Petar Petrović" required></div>
+                    <button type="submit" class="btn-submit" style="background:#ec4899;">Dodaj donatora</button>
+                </form>
             </div>
             <div class="card" style="border-left:4px solid var(--primary);">
                 <h3 style="margin-bottom:12px;">🔐 Administrator</h3>
@@ -565,6 +584,7 @@
             btn.classList.add('active');
             if (tabId === 'mapa') { setTimeout(() => { initMap(); loadReports(); }, 150); }
             if (tabId === 'status') loadReports();
+            if (tabId === 'profil') { loadReports(); loadRewards(); }
             if (tabId === 'nagrade') loadRewards();
         }
 
@@ -573,6 +593,7 @@
             try {
                 const r = await api('/rest/v1/prijave?select=*&order=created_at.desc&limit=300');
                 items = await r.json();
+                await ensureHash();
             } catch (e) {
                 console.error(e);
                 $('statusList').innerHTML = '<p class="muted">Prijave se trenutno ne mogu učitati. Pokušaj ponovo.</p>';
@@ -580,6 +601,7 @@
             }
             renderMap();
             renderStatus();
+            renderMyProfile();
         }
 
         /* ---------- mapa ---------- */
@@ -621,7 +643,7 @@
         /* ---------- status prijava ---------- */
         function renderStatus() {
             const f = $('statusFilter').value;
-            const list = items.filter(r => f === 'all' || String(r.status) === f);
+            const list = items.filter(r => f === 'all' || (f === 'mine' ? (myHash && r.owner_hash === myHash) : String(r.status) === f));
             if (!list.length) { $('statusList').innerHTML = '<p class="muted">Nema prijava.</p>'; return; }
             $('statusList').innerHTML = list.map(r => {
                 const s = r.status || 0, id = Number(r.id), img = safeImg(r.photo_url);
@@ -796,6 +818,7 @@
             renderRewards();
         }
         function renderRewards() {
+            renderMyProfile();
             $('ptsAvail').textContent = pts.available;
             $('sponsorList').innerHTML = sponsors.length ? sponsors.map(sp => {
                 const id = Number(sp.id), ok = pts.available >= sp.cost;
@@ -967,6 +990,51 @@
             if (!token && alertOn) $('alertBtn').click();
         };
         updateAdminUI();
+
+        /* ---------- donatori ---------- */
+        var donors = [];
+        async function loadDonors() {
+            try { donors = await (await api('/rest/v1/donatori?select=*&order=created_at.desc')).json(); } catch (e) { donors = []; console.error(e); }
+            $('donorCard').style.display = (donors.length || token) ? 'block' : 'none';
+            $('donorList').innerHTML = donors.length ? donors.map(d => `
+                <div class="sponsor-item" style="padding:8px 12px;"><strong>${esc(d.name)}</strong>
+                ${token ? `<button class="delete-btn" onclick="deleteDonor(${Number(d.id)})">✕</button>` : ''}</div>`).join('')
+                : '<p class="muted">Budi prvi koji će podržati aplikaciju.</p>';
+        }
+        $('donorForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            try {
+                await api('/rest/v1/donatori', {method: 'POST', headers: {'Content-Type': 'application/json', Prefer: 'return=minimal'},
+                    body: JSON.stringify({name: $('donorName').value.trim()})}, true);
+                e.target.reset(); loadDonors();
+            } catch (err) { adminError(err); }
+        });
+        async function deleteDonor(id) {
+            if (!confirm('Ukloniti ovog donatora sa spiska?')) return;
+            try { await api('/rest/v1/donatori?id=eq.' + id, {method: 'DELETE'}, true); loadDonors(); } catch (e) { adminError(e); }
+        }
+        const _uau4 = updateAdminUI;
+        updateAdminUI = function () { _uau4(); $('donorForm').style.display = token ? 'block' : 'none'; loadDonors(); };
+        updateAdminUI();
+
+        /* ---------- moj profil i moje prijave ---------- */
+        var myHash = null;
+        async function ensureHash() { if (!myHash) myHash = await ownerHash(); }
+        function renderMyProfile() {
+            if (!$('myProfileInfo')) return;
+            const mine = items.filter(r => myHash && r.owner_hash === myHash);
+            const ok = mine.filter(r => (r.status || 0) >= 1).length;
+            const done = mine.filter(r => r.status === 2).length;
+            $('myProfileInfo').innerHTML =
+                `<p>Prijava poslato sa ovog uređaja: <b>${mine.length}</b></p>` +
+                `<p>Potvrđeno (U radu ili Završeno): <b>${ok}</b> · Završeno: <b>${done}</b></p>` +
+                `<p>Bodovi na raspolaganju: <b>${(pts && pts.available) || 0}</b> · Kuponi: <b>${myCp.length}</b></p>`;
+        }
+        function showMine() {
+            $('statusFilter').value = 'mine';
+            switchTab('status', document.querySelectorAll('nav button')[2]);
+        }
+        ensureHash().then(renderMyProfile);
     </script>
 </body>
 </html>
